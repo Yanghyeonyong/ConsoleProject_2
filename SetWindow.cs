@@ -17,6 +17,8 @@ namespace ConsoleProject_2
 
             int width = Math.Min(w, maxWidth);
             int height = Math.Min(h, maxHeight);
+
+            Console.SetWindowSize(width, height);
         }
     }
 }

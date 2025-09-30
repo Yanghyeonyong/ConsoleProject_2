@@ -14,6 +14,10 @@ namespace ConsoleProject_2
 
             ConsoleKeyInfo key;
             Player player=new Player();
+            for (int i = 0; i < 200; i++)
+            {
+                Console.Write("a");
+            }
             while (true)
             {
                 key = Console.ReadKey(true);
