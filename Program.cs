@@ -10,7 +10,7 @@ namespace ConsoleProject_2
     {
         static void Main(string[] args)
         {
-        
+            GameSetting.WindowSetting(200, 200);
         }
     }
 }

@@ -6,3 +6,11 @@ C:\BootCamp\VS\ConsoleProject_2\obj\Debug\ConsoleProject_2.csproj.CoreCompileInp
 C:\BootCamp\VS\ConsoleProject_2\obj\Debug\ConsoleProject_2.exe
 C:\BootCamp\VS\ConsoleProject_2\obj\Debug\ConsoleProject_2.pdb
 C:\BootCamp\VS\ConsoleProject_2\obj\Debug\ConsoleProject_2.exe.config
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\bin\Debug\ConsoleProject_2.exe.config
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\bin\Debug\ConsoleProject_2.exe
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\bin\Debug\ConsoleProject_2.pdb
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\obj\Debug\ConsoleProject_2.csproj.AssemblyReference.cache
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\obj\Debug\ConsoleProject_2.exe.config
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\obj\Debug\ConsoleProject_2.csproj.CoreCompileInputs.cache
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\obj\Debug\ConsoleProject_2.exe
+C:\BootCamp\VS\ConsoleProject_2\ConsoleProject_2\obj\Debug\ConsoleProject_2.pdb
