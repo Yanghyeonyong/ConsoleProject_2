@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|c:\\bootcamp\\vs\\consoleproject_2\\consoleproject_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|c:\\bootcamp\\vs\\consoleproject_2\\consoleproject_2\\setwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\setwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:setwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|c:\\bootcamp\\vs\\consoleproject_2\\consoleproject_2\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,43 +22,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Player.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Player.cs",
               "RelativeDocumentMoniker": "Player.cs",
               "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Player.cs",
               "RelativeToolTip": "Player.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAABYAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAACUAAAAAAAAAAAAuwC8AAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-30T07:48:34.324Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "SetWindow.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\SetWindow.cs",
               "RelativeDocumentMoniker": "SetWindow.cs",
               "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\SetWindow.cs",
               "RelativeToolTip": "SetWindow.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-30T07:29:59.367Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Program.cs*",
-              "RelativeToolTip": "Program.cs*",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAAAAwAAAAsAAAAAAAAAA==",
+              "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAQwB8AAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-30T07:04:06.056Z",
               "EditorCaption": ""
