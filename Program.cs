@@ -10,14 +10,12 @@ namespace ConsoleProject_2
     {
         static void Main(string[] args)
         {
-            GameSetting.WindowSetting(200, 200);
+
+            GameSetting.WindowSetting(200, 60);
 
             ConsoleKeyInfo key;
             Player player=new Player();
-            for (int i = 0; i < 200; i++)
-            {
-                Console.Write("a");
-            }
+
             while (true)
             {
                 key = Console.ReadKey(true);
@@ -34,9 +32,7 @@ namespace ConsoleProject_2
                         break;
                     case ConsoleKey.RightArrow:
                         player.MoveRight();
-                        break;
-
-                
+                        break;             
                 }
                 
             }

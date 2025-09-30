@@ -32,12 +32,14 @@ namespace ConsoleProject_2
 
         public void MoveCharacter()
         {
+            Map.SetPlayerMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
             Console.Write("@");
         }
 
         public void EraseCharacter()
         {
+            Map.SetPlayerMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
             Console.Write(" ");
         }
