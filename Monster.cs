@@ -30,7 +30,7 @@ namespace ConsoleProject_2
         {
             Map.SetMonsterMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
-            Console.Write("●");
+            Console.Write("z");
         }
 
         public void EraseCharacter()

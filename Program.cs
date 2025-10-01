@@ -36,6 +36,9 @@ namespace ConsoleProject_2
                         break;
                     case ConsoleKey.RightArrow:
                         player.MoveRight();
+                        break;
+                    case ConsoleKey.A:
+                        player.Attack(1, 1, 1, 1);
                         break;             
                 }
                 
