@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleProject_2
 {
+    #region 2025.10.01 구현 목록
+    //몬스터와 플레이어 충돌 구현
+    #endregion
     internal class Program
     {
         static void Main(string[] args)
@@ -15,6 +18,7 @@ namespace ConsoleProject_2
 
             ConsoleKeyInfo key;
             Player player=new Player();
+            Monster monster=new Monster();
 
             while (true)
             {

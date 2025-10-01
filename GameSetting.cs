@@ -20,6 +20,7 @@ namespace ConsoleProject_2
 
             //윈도우 콘솔창 크기 설정
             Console.SetWindowSize(width, height);
+
             //맵 크기 = 윈도우 콘솔창 크기
             Map.InitMap(width, height);
         }

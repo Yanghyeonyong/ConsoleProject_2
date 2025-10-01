@@ -34,9 +34,10 @@ namespace ConsoleProject_2
 
             //몬스터와 플레이어가 충돌 시
             if (monsterMap[x, y] && playerMap[x, y])
-            { 
+            {
                 //발생할 코드 작성 예정
                 //몬스터가 들이 박은거니 플레이어한테 부정적 영향
+                Console.Write("충돌 발생:Monster");
             }
         }
         public static void SetPlayerMap(int x, int y)
@@ -50,14 +51,19 @@ namespace ConsoleProject_2
             else
             {
                 playerMap[x, y] = true;
+
+                //몬스터와 플레이어가 충돌 시
+                if (monsterMap[x, y] && playerMap[x, y])
+                {
+                    //발생할 코드 작성 예정
+                    //플레이어가 들이 박은거니 플레이어한테 부정적 영향
+                    
+                    //해당 문자열 출력 확인 -> 충돌 기능 정상 작동
+                    Console.Write("충돌 발생:Player");
+                }
             }
 
-            //몬스터와 플레이어가 충돌 시
-            if (monsterMap[x, y] && playerMap[x, y])
-            { 
-                //발생할 코드 작성 예정
-                //플레이어가 들이 박은거니 플레이어한테 부정적 영향
-            }
+
         }
 
     }
