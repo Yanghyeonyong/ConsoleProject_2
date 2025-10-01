@@ -10,15 +10,26 @@ namespace ConsoleProject_2
 {
     enum Direction
     { left, right, up, down }
+    //struct MyPos
+    //{
+    //    public int[] x;
+    //    public int[] y;
+    //}
     struct MyPos
     {
         public int x;
         public int y;
     }
+
+
     internal class Player
     {
         string name;
         Direction dir;
+        string[] playerImage;
+        string[] eraserplayerImage;
+
+
         public string Name
         {
             get { return name; }
@@ -29,22 +40,51 @@ namespace ConsoleProject_2
 
         public Player()
         {
+            //2*7의 배열로 캐릭터의 충돌 범위를 설정한다<-생각해보니 굳이 설정할 필요 없는데?
+            //pos.x = new int[7];
+            //pos.y = new int[2];
+            playerImage = new string[2];
+            playerImage[0] = " ∧ ∧";
+            playerImage[1] = "( '▽' )";//<-이거 특수문자 때문에 크기 8 먹는다 [2]*8 배열인듯
+            //playerImage = " ∧ ∧\n( '▽' )";
             Name = "Nothing";
+            eraserplayerImage = new string[2];
+            eraserplayerImage[0] = "        ";
+            eraserplayerImage[1] = "        ";
+            //pos.x[0] = 0;
+            //pos.y[0] = 0;
             pos.x = 0;
             pos.y = 0;
             //MoveCharacter();
-            SetCharacterPos("@");
+            SetCharacterPos(playerImage);
         }
 
-        public void SetCharacterPos(string s)
+        public void SetCharacterPos(string[] s)
         {
-            Map.SetPlayerMap(pos.x, pos.y);
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    Map.SetPlayerMap(pos.x + j, pos.y + i);
+                }
+            }
+            
+            //Map.SetPlayerMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
-            Console.Write(s);
+
+            Console.Write(s[0]);
+            Console.SetCursorPosition(pos.x, pos.y+1);
+            Console.Write(s[1]);
         }
+        //public void SetCharacterPos(string s)
+        //{
+        //    Map.SetPlayerMap(pos.x, pos.y);
+        //    Console.SetCursorPosition(pos.x, pos.y);
+        //    Console.Write(s);
+        //}
         public void Move(Direction dir)
         {
-            SetCharacterPos(" ");
+            SetCharacterPos(eraserplayerImage);
             switch (dir)
             {
                 case Direction.left:
@@ -60,8 +100,28 @@ namespace ConsoleProject_2
                     pos.y++;
                     break;
             }
-            SetCharacterPos("@");
+            SetCharacterPos(playerImage);
         }
+        //public void Move(Direction dir)
+        //{
+        //    SetCharacterPos(" ");
+        //    switch (dir)
+        //    {
+        //        case Direction.left:
+        //            pos.x--;
+        //            break;
+        //        case Direction.right:
+        //            pos.x++;
+        //            break;
+        //        case Direction.up:
+        //            pos.y--;
+        //            break;
+        //        case Direction.down:
+        //            pos.y++;
+        //            break;
+        //    }
+        //    SetCharacterPos(playerImage);
+        //}
 
         public void MoveLeft()
         {
