@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -7,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace ConsoleProject_2
 {
+    enum Direction
+    { left, right, up, down }
     struct MyPos
     {
         public int x;
@@ -15,6 +18,7 @@ namespace ConsoleProject_2
     internal class Player
     {
         string name;
+        Direction dir;
         public string Name
         {
             get { return name; }
@@ -28,29 +32,42 @@ namespace ConsoleProject_2
             Name = "Nothing";
             pos.x = 0;
             pos.y = 0;
-            MoveCharacter();
+            //MoveCharacter();
+            SetCharacterPos("@");
         }
 
-        public void MoveCharacter()
+        public void SetCharacterPos(string s)
         {
             Map.SetPlayerMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
-            Console.Write("@");
+            Console.Write(s);
+        }
+        public void Move(Direction dir)
+        {
+            SetCharacterPos(" ");
+            switch (dir)
+            {
+                case Direction.left:
+                    pos.x--;
+                    break;
+                case Direction.right:
+                    pos.x++;
+                    break;
+                case Direction.up:
+                    pos.y--;
+                    break;
+                case Direction.down:
+                    pos.y++;
+                    break;
+            }
+            SetCharacterPos("@");
         }
 
-        public void EraseCharacter()
-        {
-            Map.SetPlayerMap(pos.x, pos.y);
-            Console.SetCursorPosition(pos.x, pos.y);
-            Console.Write(" ");
-        }
         public void MoveLeft()
         {
             if (pos.x > 0)
             {
-                EraseCharacter();
-                pos.x--;
-                MoveCharacter();
+                Move(Direction.left);
             }
 
         }
@@ -58,9 +75,7 @@ namespace ConsoleProject_2
         {
             if (pos.x < 200)
             {
-                EraseCharacter();
-                pos.x++;
-                MoveCharacter();
+                Move(Direction.right);
             }
 
         }
@@ -68,9 +83,7 @@ namespace ConsoleProject_2
         {
             if (pos.y > 0)
             {
-                EraseCharacter();
-                pos.y--;
-                MoveCharacter();
+                Move(Direction.up);
             }
 
         }
@@ -78,82 +91,111 @@ namespace ConsoleProject_2
         {
             if (pos.y < 60)
             {
-                EraseCharacter();
-                pos.y++;
-                MoveCharacter();
+                Move(Direction.down);
             }
 
         }
 
-        public void Attack(int forwardRangeX,int rearRangeX, int topRangeY, int bottomRangeY)
+        public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY)
         {
-
-            Map.SetAttackMap(pos,forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
-            ////pos.x+1부터 forwardRange까지 공격범위이며, 이는 맥스 너비를 넘어갈 경우 넘어간 것은 무시한다
-            ////while 반복문으로 구현해야겠다
-            //int rangeX = 1;
-            //int rangeY = 1;
-
-
-
-            ////전방 공격 범위
-            //while (true)
-            //{
-            //    if (rangeX + pos.x < 200 && rangeX <= forwardRangeX)
-            //    {
-            //        Map.SetAttackMap(rangeX + pos.x, pos.y, 1);
-            //        rangeX++;
-            //    }
-            //    else
-            //    {
-            //        rangeX = 1;
-            //        break;
-            //    }
-            //}
-            ////후방 공격 범위
-            //while (true)
-            //{
-            //    if (pos.x-rangeX >=0 && rangeX <= rearRangeX)
-            //    {
-            //        Map.SetAttackMap(pos.x - rangeX, pos.y, 1);
-            //        rangeX++;
-            //    }
-            //    else
-            //    {
-            //        rangeX = 1;
-            //        break;
-            //    }
-            //}
-            ////상단 공격 범위
-            //while (true)
-            //{
-            //    if (pos.y- rangeY >=0 && rangeY <= topRangeY)
-            //    {
-            //        Map.SetAttackMap(pos.x,pos.y-rangeY, 1);
-            //        rangeY++;
-            //    }
-            //    else
-            //    {
-            //        rangeY = 1;
-            //        break;
-            //    }
-            //}
-            ////전방 공격 범위
-            //while (true)
-            //{
-            //    if (rangeY + pos.y < 60 && rangeY <= bottomRangeY)
-            //    {
-            //        Map.SetAttackMap(pos.x, rangeY + pos.y, 1);
-            //        rangeY++;
-            //    }
-            //    else
-            //    {
-            //        rangeY = 1;
-            //        break;
-            //    }
-            //}
-            
-            //Console.SetCursorPosition(pos.x, pos.y);
+            //Map.SetAttackMap(pos,forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
+            SetAttackMap(pos, forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
         }
+        public static void SetAttack(int x, int y, List<int> attackRangeX, List<int> attackRangeY)
+        {
+            Map.AttackMap[x, y] = true;
+            attackRangeX.Add(x);
+            attackRangeY.Add(y);
+            Console.SetCursorPosition(x, y);
+            Console.Write("c");
+            if (Map.AttackMap[x, y] && Map.MonsterMap[x, y])
+            {
+                Console.WriteLine("몬스터 공겨어어어억");
+                Map.MonsterMap[x, y] = false;
+            }
+        }
+
+        //이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
+        public static void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
+        {
+            BackgroundWorker attack = new BackgroundWorker();
+            attack.DoWork += (sender, e) =>
+            {
+                int attackX;
+                int attackY;
+                List<int> attackRangeX = new List<int>();
+                List<int> attackRangeY = new List<int>();
+                for (int i = 1; i <= forwardRangeX; i++)
+                {
+                    attackX = pos.x + i;
+                    attackY = pos.y;
+                    if (attackX < 200)
+                    {
+                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                for (int i = 1; i <= rearRangeX; i++)
+                {
+                    attackX = pos.x - i;
+                    attackY = pos.y;
+                    if (attackX >= 0)
+                    {
+                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                for (int i = 1; i <= topRangeY; i++)
+                {
+                    attackX = pos.x;
+                    attackY = pos.y - i;
+                    if (attackY >= 0)
+                    {
+                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                for (int i = 1; i <= bottomRangeY; i++)
+                {
+                    attackX = pos.x;
+                    attackY = pos.y + i;
+                    if (attackY <= 60)
+                    {
+                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                Thread.Sleep(duration * 1000);
+
+                for (int i = 0; i < attackRangeX.Count; i++)
+                {
+                    Console.SetCursorPosition(attackRangeX[i], attackRangeY[i]);
+                    Console.Write(" ");
+                    Map.AttackMap[attackRangeX[i], attackRangeY[i]] = false;
+                }
+                attackRangeX = null;
+                attackRangeY = null;
+            };
+            attack.RunWorkerCompleted += (sender, e) =>
+            {
+                attack = null;
+            };
+            attack.RunWorkerAsync();
+        }
+
+
     }
 }
