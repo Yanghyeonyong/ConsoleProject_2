@@ -61,13 +61,16 @@ namespace ConsoleProject_2
 
         public void SetCharacterPos(string[] s)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    Map.SetPlayerMap(pos.x + j, pos.y + i);
-                }
-            }
+            Map.SetPlayerMap(pos.x, pos.y);
+
+            ////이걸 여기서 하면 안되고 맵에서 해야되네 
+            //for (int i = 0; i < 2; i++)
+            //{
+            //    for (int j = 0; j < 8; j++)
+            //    {
+            //        Map.SetPlayerMap(pos.x + j, pos.y + i);
+            //    }
+            //}
             
             //Map.SetPlayerMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
