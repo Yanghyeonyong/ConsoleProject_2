@@ -30,7 +30,8 @@ namespace ConsoleProject_2
         string[] eraserplayerImage;
 
         bool onHuntingArea;
-
+        //더블점프 포기하고 그냥 점프중엔 조작 안되게 만들기 위함
+        bool onJump;
         public string Name
         {
             get { return name; }
@@ -65,6 +66,12 @@ namespace ConsoleProject_2
             onHuntingArea = true;
             //이거도 테스트용이라 지금 여기서 실행하는 거임
             Gravity();
+
+            //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
+            onJump = true;
+            
+            //이거도 테스트용
+            Jump();
         }
 
         public void SetCharacterPos(string[] s)
@@ -134,17 +141,45 @@ namespace ConsoleProject_2
         }
 
         //전방 점프같은 경우 어떻게 구현하지
+        //백그라운드로 구현
+        //현재 점프를 반복할경우 일정 확률로 캐릭터의 이미지가 지워지지 않고 남아있는 것을 확인
+        //반복문 처리 속도가 너무 빨라서 그럴 수도 있다고 생각함
         public void Jump()
         {
-            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
+            BackgroundWorker jump = new BackgroundWorker();
+            ConsoleKeyInfo key;
+            jump.DoWork += (sender, e) =>
             {
-                Move(Direction.up);
-            }
-            
-            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
+                while (onHuntingArea)
+                {
+                    
+                    //발 밑에 벽이 있을 경우 점프 가능
+                    if (Map.BaseMap[pos.x, pos.y + playerImage.Length])
+                    {
+                        //Console.WriteLine("점프 가능");
+                        onJump = false;
+                    }
+                    if (!onJump)
+                    {
+                        key = Console.ReadKey(true);
+                        switch (key.Key)
+                        {
+                            case ConsoleKey.UpArrow:
+                                //Console.WriteLine("점프!!");
+                                MoveUp();
+                                MoveUp();
+                                //Console.WriteLine("점프 성공");
+                                break;
+                        }
+                        onJump = true;
+                    }
+                }
+            };
+            jump.RunWorkerCompleted += (sender, e) =>
             {
-                Move(Direction.up);
-            }
+
+            };
+            jump.RunWorkerAsync();
         }
 
         //이건 백그라운드에서 일정시간마다 아래로 이동하도록 설정하면 될 것 같다.

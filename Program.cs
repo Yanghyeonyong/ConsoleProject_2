@@ -32,7 +32,7 @@ namespace ConsoleProject_2
                 switch(key.Key) 
                     {
                     case ConsoleKey.UpArrow:
-                        player.MoveUp();
+                        //player.MoveUp();
                         break;
                     case ConsoleKey.DownArrow:
                         player.MoveDown();
