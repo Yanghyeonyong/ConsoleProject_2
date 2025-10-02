@@ -26,8 +26,11 @@ namespace ConsoleProject_2
     {
         string name;
         Direction dir;
-        string[] playerImage;
-        string[] eraserplayerImage;
+        //// 스레드에서 쓰려면 static으로 만들어야 하네...
+        //static string[] playerImage;
+        //static string[] eraserplayerImage;
+        static string[] playerImage;
+        static string[] eraserplayerImage;
 
         bool onHuntingArea;
         //더블점프 포기하고 그냥 점프중엔 조작 안되게 만들기 위함
@@ -69,7 +72,7 @@ namespace ConsoleProject_2
 
             //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
             onJump = true;
-            
+
             //이거도 테스트용
             Jump();
         }
@@ -80,7 +83,7 @@ namespace ConsoleProject_2
             Console.SetCursorPosition(pos.x, pos.y);
 
             Console.Write(s[0]);
-            Console.SetCursorPosition(pos.x, pos.y+1);
+            Console.SetCursorPosition(pos.x, pos.y + 1);
             Console.Write(s[1]);
         }
 
@@ -108,14 +111,14 @@ namespace ConsoleProject_2
         public void MoveLeft()
         {
             //특수문자라 -2다 일반이면 -1로 바꿔야 한다
-            if (!Map.BaseMap[pos.x - 2,pos.y])
+            if (!Map.BaseMap[pos.x - 2, pos.y])
             {
                 Move(Direction.left);
             }
         }
         public void MoveRight()
         {
-            if (!Map.BaseMap[pos.x + playerImage[1].Length+1,pos.y])
+            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y])
             {
                 Move(Direction.right);
             }
@@ -123,7 +126,7 @@ namespace ConsoleProject_2
         }
         public void MoveUp()
         {
-            if (!Map.BaseMap[pos.x,pos.y-playerImage.Length+1])
+            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
             {
                 Move(Direction.up);
             }
@@ -133,7 +136,7 @@ namespace ConsoleProject_2
         {
             //왜 이런 값이 나올까 생각해봤는제 pos는 플레이어의 좌측 상단 좌표
             // pos.y+playerImage+1이 아닌 이유는 애초에 내가 아랫줄 맵은 baseMap.GetLength(1)-1d으로 받아놔서 그런거 같음
-            if (!Map.BaseMap[pos.x,pos.y+playerImage.Length])
+            if (!Map.BaseMap[pos.x, pos.y + playerImage.Length])
             {
                 Move(Direction.down);
             }
@@ -152,7 +155,7 @@ namespace ConsoleProject_2
             {
                 while (onHuntingArea)
                 {
-                    
+
                     //발 밑에 벽이 있을 경우 점프 가능
                     if (Map.BaseMap[pos.x, pos.y + playerImage.Length])
                     {
@@ -226,6 +229,86 @@ namespace ConsoleProject_2
             }
         }
 
+        ////이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
+        //public static void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
+        //{
+        //    BackgroundWorker attack = new BackgroundWorker();
+        //    attack.DoWork += (sender, e) =>
+        //    {
+        //        int attackX;
+        //        int attackY;
+        //        List<int> attackRangeX = new List<int>();
+        //        List<int> attackRangeY = new List<int>();
+        //        for (int i = 1; i <= forwardRangeX; i++)
+        //        {
+        //            attackX = pos.x + i;
+        //            attackY = pos.y;
+        //            if (attackX < 200)
+        //            {
+        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        for (int i = 1; i <= rearRangeX; i++)
+        //        {
+        //            attackX = pos.x - i;
+        //            attackY = pos.y;
+        //            if (attackX >= 0)
+        //            {
+        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        for (int i = 1; i <= topRangeY; i++)
+        //        {
+        //            attackX = pos.x;
+        //            attackY = pos.y - i;
+        //            if (attackY >= 0)
+        //            {
+        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        for (int i = 1; i <= bottomRangeY; i++)
+        //        {
+        //            attackX = pos.x;
+        //            attackY = pos.y + i;
+        //            if (attackY <= 60)
+        //            {
+        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+
+        //        Thread.Sleep(duration * 1000);
+
+        //        for (int i = 0; i < attackRangeX.Count; i++)
+        //        {
+        //            Console.SetCursorPosition(attackRangeX[i], attackRangeY[i]);
+        //            Console.Write(" ");
+        //            Map.AttackMap[attackRangeX[i], attackRangeY[i]] = false;
+        //        }
+        //        attackRangeX = null;
+        //        attackRangeY = null;
+        //    };
+        //    attack.RunWorkerCompleted += (sender, e) =>
+        //    {
+        //        attack = null;
+        //    };
+        //    attack.RunWorkerAsync();
+        //}
         //이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
         public static void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
         {
@@ -238,11 +321,13 @@ namespace ConsoleProject_2
                 List<int> attackRangeY = new List<int>();
                 for (int i = 1; i <= forwardRangeX; i++)
                 {
-                    attackX = pos.x + i;
+                    //pos.x + playerImage[1].Length
+                    attackX = pos.x + playerImage[1].Length + i;
                     attackY = pos.y;
                     if (attackX < 200)
                     {
                         SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+                        SetAttack(attackX, attackY+1, attackRangeX, attackRangeY);
                     }
                     else
                     {
@@ -256,6 +341,7 @@ namespace ConsoleProject_2
                     if (attackX >= 0)
                     {
                         SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+                        SetAttack(attackX, attackY+1, attackRangeX, attackRangeY);
                     }
                     else
                     {
@@ -268,7 +354,10 @@ namespace ConsoleProject_2
                     attackY = pos.y - i;
                     if (attackY >= 0)
                     {
-                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+                        for (int j = 0; j < playerImage[1].Length+1; j++)
+                        {
+                            SetAttack(attackX+j, attackY, attackRangeX, attackRangeY);
+                        }
                     }
                     else
                     {
@@ -278,10 +367,14 @@ namespace ConsoleProject_2
                 for (int i = 1; i <= bottomRangeY; i++)
                 {
                     attackX = pos.x;
-                    attackY = pos.y + i;
+                    attackY = pos.y + i + playerImage.Length-1;
                     if (attackY <= 60)
                     {
-                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+
+                        for (int j = 0; j < playerImage[1].Length+1; j++)
+                        {
+                            SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
+                        }
                     }
                     else
                     {

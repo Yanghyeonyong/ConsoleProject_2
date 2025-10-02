@@ -14,6 +14,8 @@ namespace ConsoleProject_2
     #endregion
     #region 2025.10.02 구현 목록
     //플레이어가 맵에 벽(BaseMap)이 있을 경우 넘어가지 못하는 기능 구현
+    //중력 구현
+    //점프 구현
     #endregion
     internal class Program
     {
