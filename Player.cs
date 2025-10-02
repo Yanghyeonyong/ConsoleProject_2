@@ -29,6 +29,7 @@ namespace ConsoleProject_2
         string[] playerImage;
         string[] eraserplayerImage;
 
+        bool onHuntingArea;
 
         public string Name
         {
@@ -58,34 +59,24 @@ namespace ConsoleProject_2
             pos.y = 30;
             //MoveCharacter();
             SetCharacterPos(playerImage);
+
+            //일단 테스트용이라 현재는 true로 둔거고
+            //나중엔 사냥터 갔을 때만 true로 바꿀 예정
+            onHuntingArea = true;
+            //이거도 테스트용이라 지금 여기서 실행하는 거임
+            Gravity();
         }
 
         public void SetCharacterPos(string[] s)
         {
             Map.SetPlayerMap(pos.x, pos.y);
-
-            ////이걸 여기서 하면 안되고 맵에서 해야되네 
-            //for (int i = 0; i < 2; i++)
-            //{
-            //    for (int j = 0; j < 8; j++)
-            //    {
-            //        Map.SetPlayerMap(pos.x + j, pos.y + i);
-            //    }
-            //}
-            
-            //Map.SetPlayerMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
 
             Console.Write(s[0]);
             Console.SetCursorPosition(pos.x, pos.y+1);
             Console.Write(s[1]);
         }
-        //public void SetCharacterPos(string s)
-        //{
-        //    Map.SetPlayerMap(pos.x, pos.y);
-        //    Console.SetCursorPosition(pos.x, pos.y);
-        //    Console.Write(s);
-        //}
+
         public void Move(Direction dir)
         {
             SetCharacterPos(eraserplayerImage);
@@ -106,33 +97,9 @@ namespace ConsoleProject_2
             }
             SetCharacterPos(playerImage);
         }
-        //public void Move(Direction dir)
-        //{
-        //    SetCharacterPos(" ");
-        //    switch (dir)
-        //    {
-        //        case Direction.left:
-        //            pos.x--;
-        //            break;
-        //        case Direction.right:
-        //            pos.x++;
-        //            break;
-        //        case Direction.up:
-        //            pos.y--;
-        //            break;
-        //        case Direction.down:
-        //            pos.y++;
-        //            break;
-        //    }
-        //    SetCharacterPos(playerImage);
-        //}
 
         public void MoveLeft()
         {
-            //if (pos.x > 0)
-            //{
-            //    Move(Direction.left);
-            //}
             //특수문자라 -2다 일반이면 -1로 바꿔야 한다
             if (!Map.BaseMap[pos.x - 2,pos.y])
             {
@@ -141,10 +108,6 @@ namespace ConsoleProject_2
         }
         public void MoveRight()
         {
-            //if (pos.x < 200)
-            //{
-            //    Move(Direction.right);
-            //}
             if (!Map.BaseMap[pos.x + playerImage[1].Length+1,pos.y])
             {
                 Move(Direction.right);
@@ -153,10 +116,6 @@ namespace ConsoleProject_2
         }
         public void MoveUp()
         {
-            //if (pos.y > 0)
-            //{
-            //    Move(Direction.up);
-            //}
             if (!Map.BaseMap[pos.x,pos.y-playerImage.Length+1])
             {
                 Move(Direction.up);
@@ -165,11 +124,6 @@ namespace ConsoleProject_2
         }
         public void MoveDown()
         {
-            //if (pos.y < 60)
-            //{
-            //    Move(Direction.down);
-            //}
-
             //왜 이런 값이 나올까 생각해봤는제 pos는 플레이어의 좌측 상단 좌표
             // pos.y+playerImage+1이 아닌 이유는 애초에 내가 아랫줄 맵은 baseMap.GetLength(1)-1d으로 받아놔서 그런거 같음
             if (!Map.BaseMap[pos.x,pos.y+playerImage.Length])
@@ -177,6 +131,45 @@ namespace ConsoleProject_2
                 Move(Direction.down);
             }
 
+        }
+
+        //전방 점프같은 경우 어떻게 구현하지
+        public void Jump()
+        {
+            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
+            {
+                Move(Direction.up);
+            }
+            
+            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
+            {
+                Move(Direction.up);
+            }
+        }
+
+        //이건 백그라운드에서 일정시간마다 아래로 이동하도록 설정하면 될 것 같다.
+        //해당 함수는 사냥터로 들어갈 경우 호출되며 사냥터 탈출 시 
+        //onHuntingArea가 false로 전환되며 반복문도 끝난다
+        public void Gravity()
+        {
+            BackgroundWorker gravity = new BackgroundWorker();
+            gravity.DoWork += (sender, e) =>
+            {
+                while (onHuntingArea)
+                {
+                    if (!Map.BaseMap[pos.x, pos.y + playerImage.Length])
+                    {
+                        Move(Direction.down);
+                    }
+                    //해당 주기마다 아래로 내려간다
+                    Thread.Sleep(250);
+                }
+            };
+            gravity.RunWorkerCompleted += (sender, e) =>
+            {
+
+            };
+            gravity.RunWorkerAsync();
         }
 
         public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY)
