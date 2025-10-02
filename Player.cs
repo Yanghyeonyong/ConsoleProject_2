@@ -36,6 +36,7 @@ namespace ConsoleProject_2
             set { name = value; }
         }
 
+        //해당 좌표는 플레이어의 좌측 상단 좌표이다
         public MyPos pos;
 
         public Player()
@@ -53,8 +54,8 @@ namespace ConsoleProject_2
             eraserplayerImage[1] = "        ";
             //pos.x[0] = 0;
             //pos.y[0] = 0;
-            pos.x = 0;
-            pos.y = 0;
+            pos.x = 100;
+            pos.y = 30;
             //MoveCharacter();
             SetCharacterPos(playerImage);
         }
@@ -128,15 +129,23 @@ namespace ConsoleProject_2
 
         public void MoveLeft()
         {
-            if (pos.x > 0)
+            //if (pos.x > 0)
+            //{
+            //    Move(Direction.left);
+            //}
+            //특수문자라 -2다 일반이면 -1로 바꿔야 한다
+            if (!Map.BaseMap[pos.x - 2,pos.y])
             {
                 Move(Direction.left);
             }
-
         }
         public void MoveRight()
         {
-            if (pos.x < 200)
+            //if (pos.x < 200)
+            //{
+            //    Move(Direction.right);
+            //}
+            if (!Map.BaseMap[pos.x + playerImage[1].Length+1,pos.y])
             {
                 Move(Direction.right);
             }
@@ -144,7 +153,11 @@ namespace ConsoleProject_2
         }
         public void MoveUp()
         {
-            if (pos.y > 0)
+            //if (pos.y > 0)
+            //{
+            //    Move(Direction.up);
+            //}
+            if (!Map.BaseMap[pos.x,pos.y-playerImage.Length+1])
             {
                 Move(Direction.up);
             }
@@ -152,7 +165,14 @@ namespace ConsoleProject_2
         }
         public void MoveDown()
         {
-            if (pos.y < 60)
+            //if (pos.y < 60)
+            //{
+            //    Move(Direction.down);
+            //}
+
+            //왜 이런 값이 나올까 생각해봤는제 pos는 플레이어의 좌측 상단 좌표
+            // pos.y+playerImage+1이 아닌 이유는 애초에 내가 아랫줄 맵은 baseMap.GetLength(1)-1d으로 받아놔서 그런거 같음
+            if (!Map.BaseMap[pos.x,pos.y+playerImage.Length])
             {
                 Move(Direction.down);
             }

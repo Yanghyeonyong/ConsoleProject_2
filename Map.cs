@@ -14,6 +14,14 @@ namespace ConsoleProject_2
 {
     internal static class Map
     {
+        //배경화면을 그릴 맵
+        static bool[,] baseMap;
+        public static bool[,] BaseMap 
+        { 
+            get { return baseMap; } 
+            set { baseMap = value; }
+        }
+
         //플레이어와 몬스터의 위치를 추적하여 충돌을 확인하기 위해 사용
         static bool[,] playerMap;
         public static bool[,] PlayerMap
@@ -45,9 +53,61 @@ namespace ConsoleProject_2
 
         public static void InitMap(int width, int height)
         {
+
+            baseMap= new bool[width, height];
+            InitBaseMap();
+
+
             playerMap = new bool[width, height];
             monsterMap = new bool[width, height];
             attackMap = new bool[width, height];
+        }
+
+        public static void InitBaseMap()
+        {
+            //for (int i = 0; i < baseMap.GetLength(1);i++)
+            //{
+            //    Console.WriteLine("■");
+            //}
+            ////특수문자라 2씩 올린다
+            //Console.SetCursorPosition(0, 0);
+            //for (int i = 0; i < baseMap.GetLength(0);i+=2)
+            //{
+            //    Console.Write("■");
+            //}
+            //for (int i = 0; i < baseMap.GetLength(1);i++)
+            //{
+            //    Console.SetCursorPosition(baseMap.GetLength(0)-2,i);
+            //    Console.WriteLine("■");
+            //}
+            //Console.SetCursorPosition(0,baseMap.GetLength(1)-1);
+            //for (int i = 0; i < baseMap.GetLength(0);i+=2)
+            //{
+            //    Console.Write("■");
+            //}
+            for (int i = 0; i < baseMap.GetLength(1); i++)
+            {
+                baseMap[0,i] = true;
+                //특수문자라 -2 뺀다 나중에 상황에 따라 -1로 바꿀 수 도 있다
+                baseMap[baseMap.GetLength(0)-2,i] = true;
+            }
+            for (int i = 0; i < baseMap.GetLength(0); i++)
+            {
+                baseMap[i,0] = true;
+                baseMap[i, baseMap.GetLength(1)-1] = true;
+            }
+
+            for (int i = 0; i < baseMap.GetLength(1); i++)
+            {
+                for (int j = 0; j < baseMap.GetLength(0)-1; j+=2)
+                {
+                    if (baseMap[j, i])
+                    {
+                        Console.SetCursorPosition(j, i);
+                        Console.Write("■");
+                    }
+                }
+            }
         }
 
         //이거 두개 나중에 인터페이스를 통해 하나로 통합 예정
