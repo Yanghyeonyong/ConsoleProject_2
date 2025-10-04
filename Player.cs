@@ -21,6 +21,17 @@ namespace ConsoleProject_2
         public int y;
     }
 
+    // 캐릭터 스테이터스, hp, mp, 방어력, 공격력, 치명타 확률, 치명타 데미지
+    struct Status
+    {
+        public int hp;
+        public int mp;
+        public int defence;
+        public int attack;
+        public int criticalRate;
+        public int criticalDamage;
+    }
+
 
     internal class Player
     {
@@ -44,24 +55,28 @@ namespace ConsoleProject_2
         //해당 좌표는 플레이어의 좌측 상단 좌표이다
         public MyPos pos;
 
+
+        //캐릭터 자체의 스탯
+        public Status myBaseStatus;
+
+        //캐릭터 자체의 스탯 + 아이템 스탯<-향후 아이템 추가 후 메서드 추가
+        public Status myTotalStatus;
+
+        public Player(bool test)
+        { 
+        }
+
         public Player()
         {
-            //2*7의 배열로 캐릭터의 충돌 범위를 설정한다<-생각해보니 굳이 설정할 필요 없는데?
-            //pos.x = new int[7];
-            //pos.y = new int[2];
             playerImage = new string[2];
             playerImage[0] = " ∧ ∧";
             playerImage[1] = "( '▽' )";//<-이거 특수문자 때문에 크기 8 먹는다 [2]*8 배열인듯
-            //playerImage = " ∧ ∧\n( '▽' )";
             Name = "Nothing";
             eraserplayerImage = new string[2];
             eraserplayerImage[0] = "        ";
             eraserplayerImage[1] = "        ";
-            //pos.x[0] = 0;
-            //pos.y[0] = 0;
             pos.x = 100;
             pos.y = 30;
-            //MoveCharacter();
             SetCharacterPos(playerImage);
 
             //일단 테스트용이라 현재는 true로 둔거고
@@ -229,86 +244,6 @@ namespace ConsoleProject_2
             }
         }
 
-        ////이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
-        //public static void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
-        //{
-        //    BackgroundWorker attack = new BackgroundWorker();
-        //    attack.DoWork += (sender, e) =>
-        //    {
-        //        int attackX;
-        //        int attackY;
-        //        List<int> attackRangeX = new List<int>();
-        //        List<int> attackRangeY = new List<int>();
-        //        for (int i = 1; i <= forwardRangeX; i++)
-        //        {
-        //            attackX = pos.x + i;
-        //            attackY = pos.y;
-        //            if (attackX < 200)
-        //            {
-        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-        //        for (int i = 1; i <= rearRangeX; i++)
-        //        {
-        //            attackX = pos.x - i;
-        //            attackY = pos.y;
-        //            if (attackX >= 0)
-        //            {
-        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-        //        for (int i = 1; i <= topRangeY; i++)
-        //        {
-        //            attackX = pos.x;
-        //            attackY = pos.y - i;
-        //            if (attackY >= 0)
-        //            {
-        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-        //        for (int i = 1; i <= bottomRangeY; i++)
-        //        {
-        //            attackX = pos.x;
-        //            attackY = pos.y + i;
-        //            if (attackY <= 60)
-        //            {
-        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-
-        //        Thread.Sleep(duration * 1000);
-
-        //        for (int i = 0; i < attackRangeX.Count; i++)
-        //        {
-        //            Console.SetCursorPosition(attackRangeX[i], attackRangeY[i]);
-        //            Console.Write(" ");
-        //            Map.AttackMap[attackRangeX[i], attackRangeY[i]] = false;
-        //        }
-        //        attackRangeX = null;
-        //        attackRangeY = null;
-        //    };
-        //    attack.RunWorkerCompleted += (sender, e) =>
-        //    {
-        //        attack = null;
-        //    };
-        //    attack.RunWorkerAsync();
-        //}
         //이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
         public static void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
         {
@@ -327,7 +262,7 @@ namespace ConsoleProject_2
                     if (attackX < 200)
                     {
                         SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-                        SetAttack(attackX, attackY+1, attackRangeX, attackRangeY);
+                        SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
                     }
                     else
                     {
@@ -341,7 +276,7 @@ namespace ConsoleProject_2
                     if (attackX >= 0)
                     {
                         SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-                        SetAttack(attackX, attackY+1, attackRangeX, attackRangeY);
+                        SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
                     }
                     else
                     {
@@ -354,9 +289,9 @@ namespace ConsoleProject_2
                     attackY = pos.y - i;
                     if (attackY >= 0)
                     {
-                        for (int j = 0; j < playerImage[1].Length+1; j++)
+                        for (int j = 0; j < playerImage[1].Length + 1; j++)
                         {
-                            SetAttack(attackX+j, attackY, attackRangeX, attackRangeY);
+                            SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
                         }
                     }
                     else
@@ -367,11 +302,11 @@ namespace ConsoleProject_2
                 for (int i = 1; i <= bottomRangeY; i++)
                 {
                     attackX = pos.x;
-                    attackY = pos.y + i + playerImage.Length-1;
+                    attackY = pos.y + i + playerImage.Length - 1;
                     if (attackY <= 60)
                     {
 
-                        for (int j = 0; j < playerImage[1].Length+1; j++)
+                        for (int j = 0; j < playerImage[1].Length + 1; j++)
                         {
                             SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
                         }
@@ -401,5 +336,287 @@ namespace ConsoleProject_2
         }
 
 
+        #region 캐릭터 초기 설정
+        static Status InitBaseStatus()
+        {
+            Status baseStatus;
+            baseStatus.defence = 10;
+            baseStatus.attack = 10;
+            baseStatus.criticalRate = 0;
+            baseStatus.criticalDamage = 20;
+            baseStatus.hp = 50;
+            baseStatus.mp = 10;
+
+            return baseStatus;
+        }
+
+        public void InitBaseCharacter()
+        {
+            name = "모험가";
+
+            myBaseStatus = InitBaseStatus();
+            myTotalStatus = InitBaseStatus();
+        }
+        #endregion
+
+        //캐릭터 Total 스테이터스(초기 스탯+장비 스탯_
+        public void SetTotalStatus()
+        {
+            //향후 해당 값들에 아이템 스탯 추가 예정
+            int hp = 0;
+            int mp = 0;
+            int defence = 0;
+            int attack = 0;
+            int criticalRate = 0;
+            int criticalDamage = 0;
+
+            myTotalStatus.hp = myBaseStatus.hp + hp;
+            myTotalStatus.mp = myBaseStatus.mp + mp;
+            myTotalStatus.defence = myBaseStatus.defence + defence;
+            myTotalStatus.attack = myBaseStatus.attack + attack;
+            myTotalStatus.criticalRate = myBaseStatus.criticalRate + criticalRate;
+            myTotalStatus.criticalDamage = myBaseStatus.criticalDamage + criticalDamage;
+        }
+
+
+        //캐릭터 이름 설정
+        public void SetMyName()
+        {
+            ConsoleKeyInfo key;
+            bool setName = true;
+            bool retry = false;
+            string name;
+
+            while (true)
+            {
+                setName = true;
+                Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷   당 신 은     누 구 신 가 요 ?   ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+                Console.Write("이름 : ");
+                name = Console.ReadLine();
+                Console.WriteLine($"\n당신의 이름은 [{name}] 맞습니까?\n\n다음으로 넘어가고자 한다면 Enter\n재입력을 원하시면 A 키를 눌러주세요\n");
+                while (setName)
+                {
+                    key = Console.ReadKey(true);
+
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.Enter:
+                            setName = false;
+                            retry = false;
+                            break;
+                        case ConsoleKey.A:
+                            Console.Clear();
+                            setName = false;
+                            retry = true;
+                            break;
+                    }
+                }
+                if (!retry)
+                {
+                    break;
+                }
+            }
+            Name = name;
+            Console.Clear();
+        }
+
+
+        //캐릭터 스탯 설정
+        public void SetMyStatusDetail(ref int status, ref int statPoint, int minStatPoint)
+        {
+            int usingStatPoint = 0;
+            while (true)
+            {
+                usingStatPoint = Read.ReadUInt(0);
+                if (usingStatPoint > statPoint)
+                {
+                    Console.WriteLine("잔여스탯을 넘어섰습니다. 다시 입력해주세요");
+                    Console.Write("▶ ");
+                    continue;
+                }
+                if (minStatPoint > usingStatPoint)
+                {
+                    Console.WriteLine($"최소 {minStatPoint} point가 필요합니다.");
+                    Console.Write("▶ ");
+                    continue;
+                }
+                break;
+            }
+            status = usingStatPoint;
+            statPoint -= usingStatPoint;
+        }
+
+        //초기 시작시 스테이터스 설정
+        public void SetMyStatusOnStart()
+        {
+            bool setStatus = true;
+            bool retry = false;
+            ConsoleKeyInfo key;
+            int statPoint = 100;
+
+
+            //사용자 입력 기반 스탯 배분(hp는 최소 1 이상 필요)
+            //입력 순서 hp mp 공격력, 방어력 크확 ,크뎀
+            while (true)
+            {
+                Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷ 스탯을 분배해주세요(총 {statPoint} point) ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△");
+
+                setStatus = true;
+                statPoint = 100;
+
+                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                Console.Write("HP(최소 1) : ");
+                SetMyStatusDetail(ref myBaseStatus.hp, ref statPoint, 1);
+
+                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                Console.Write("MP : ");
+                SetMyStatusDetail(ref myBaseStatus.mp, ref statPoint, 0);
+
+                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                Console.Write("공격력 : ");
+                SetMyStatusDetail(ref myBaseStatus.attack, ref statPoint, 0);
+
+                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                Console.Write("방어력 : ");
+                SetMyStatusDetail(ref myBaseStatus.defence, ref statPoint, 0);
+
+                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                Console.Write("크리티컬 확률 : ");
+                SetMyStatusDetail(ref myBaseStatus.criticalRate, ref statPoint, 0);
+
+                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                Console.Write("크리티컬 데미지 : ");
+                SetMyStatusDetail(ref myBaseStatus.criticalDamage, ref statPoint, 0);
+
+                Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");
+                while (setStatus)
+                {
+                    key = Console.ReadKey(true);
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.Enter:
+                            setStatus = false;
+                            retry = false;
+                            break;
+                        case ConsoleKey.A:
+                            Console.Clear();
+                            setStatus = false;
+                            retry = true;
+                            break;
+                    }
+                }
+                if (!retry)
+                {
+                    break;
+                }
+            }
+            Console.WriteLine("여기까지 됨");
+            SetTotalStatus();
+            Console.WriteLine();
+        }
+        public void SetMyCharacterOnStart()
+        {
+            SetMyName();
+            SetMyStatusOnStart();
+        }
+
+
+        public void ShowMyCharacterInformation()
+        {
+            Console.Clear();
+            ConsoleKeyInfo key;
+            bool returnPage = true;
+
+            Console.WriteLine($"이름 : {name}");
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷        B a s e S t a t u s        ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine($"HP : {myBaseStatus.hp}");
+            Console.WriteLine($"MP : {myBaseStatus.mp}");
+            Console.WriteLine($"공격력 : {myBaseStatus.attack}");
+            Console.WriteLine($"방어력 : {myBaseStatus.defence}");
+            Console.WriteLine($"크리티컬 확률 : {myBaseStatus.criticalRate}");
+            Console.WriteLine($"크리티컬 데미지 : {myBaseStatus.criticalDamage}");
+
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷       T o t a l S t a t u s       ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine($"HP : {myTotalStatus.hp}");
+            Console.WriteLine($"MP : {myTotalStatus.mp}");
+            Console.WriteLine($"공격력 : {myTotalStatus.attack}");
+            Console.WriteLine($"방어력 : {myTotalStatus.defence}");
+            Console.WriteLine($"크리티컬 확률 : {myTotalStatus.criticalRate}");
+            Console.WriteLine($"크리티컬 데미지 : {myTotalStatus.criticalDamage}");
+
+            Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
+            while (returnPage)
+            {
+                key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        returnPage = false;
+                        break;
+                }
+            }
+            ShowMyCharacter();
+        }
+
+        public void ShowMyCharacter()
+        {
+            Console.Clear();
+            int myInt;
+            Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     캐 릭 터           정 보      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine("무엇을 확인하시겠습니까?");
+            Console.WriteLine("0. 내 캐릭터의 스테이터스");
+            Console.WriteLine("1. 내 캐릭터의 장비");
+            Console.WriteLine("2. 인벤토리");
+            Console.WriteLine("그 이외의 숫자 입력시 마을로 복귀합니다.");
+            Console.WriteLine("\n원하는 번호를 입력하세요\n");
+            Console.Write("▶ ");
+            myInt = Read.ReadUInt(0);
+            if (myInt > 2)
+            {
+                OnVillage();
+            }
+            else if (myInt == 0)
+            {
+                ShowMyCharacterInformation();
+            }
+            else if (myInt == 1)
+            {
+                ShowMyEquipment();
+            }
+            else if (myInt == 2)
+            {
+                ShowMyInventory();
+            }
+        }
+
+        //마을로 이동하는 메서드
+        public void OnVillage()
+        { }
+
+        //착용중인 장비를 보여주는 메서드
+        public void ShowMyEquipment()
+        { }
+
+        //인벤토리 내용물을 보여주는 메서드
+        public void ShowMyInventory()
+        { }
+
+
+        public void onGame()
+        {
+            Console.Clear();
+
+            //캐릭터 초기 설정
+            InitBaseCharacter();
+            
+            SetMyCharacterOnStart();
+
+            Console.Clear();
+
+            ShowMyCharacter();
+
+
+        }
     }
 }

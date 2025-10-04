@@ -22,35 +22,57 @@ namespace ConsoleProject_2
         static void Main(string[] args)
         {
 
-            GameSetting.WindowSetting(200, 60);
+           // GameSetting.WindowSetting(200, 60);
+            GameSetting.ShowTitle();
 
+            bool gameStart = false;
             ConsoleKeyInfo key;
-            Player player=new Player();
-            Monster monster=new Monster();
-
+            //엔터키 입력시 게임 시작
             while (true)
             {
                 key = Console.ReadKey(true);
-                switch(key.Key) 
-                    {
-                    case ConsoleKey.UpArrow:
-                        //player.MoveUp();
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        gameStart = true;
                         break;
-                    case ConsoleKey.DownArrow:
-                        player.MoveDown();
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        player.MoveLeft();
-                        break;
-                    case ConsoleKey.RightArrow:
-                        player.MoveRight();
-                        break;
-                    case ConsoleKey.A:
-                        player.Attack(1, 1, 1, 1);
-                        break;             
                 }
-                
+                if (gameStart)
+                {
+                    break;
+                }
             }
+            Player player = new Player(gameStart);
+            player.onGame();
+
+
+
+            //Player player=new Player();
+            //Monster monster=new Monster();
+
+            //while (true)
+            //{
+            //    key = Console.ReadKey(true);
+            //    switch(key.Key) 
+            //        {
+            //        case ConsoleKey.UpArrow:
+            //            //player.MoveUp();
+            //            break;
+            //        case ConsoleKey.DownArrow:
+            //            player.MoveDown();
+            //            break;
+            //        case ConsoleKey.LeftArrow:
+            //            player.MoveLeft();
+            //            break;
+            //        case ConsoleKey.RightArrow:
+            //            player.MoveRight();
+            //            break;
+            //        case ConsoleKey.A:
+            //            player.Attack(1, 1, 1, 1);
+            //            break;             
+            //    }
+                
+            //}
 
         }
     }

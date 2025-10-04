@@ -27,5 +27,14 @@ namespace ConsoleProject_2
             //맵 크기 = 윈도우 콘솔창 크기
             Map.InitMap(width, height);
         }
+
+
+        //타이틀 화면 호출 메서드
+        //작동 가능하도록만 설정 후 이후 꾸밀 예정
+        public static void ShowTitle()
+        {
+            Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷    C o n s o l e         R P G     ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.Write("        Press Enter To Start");
+        }
     }
 }
