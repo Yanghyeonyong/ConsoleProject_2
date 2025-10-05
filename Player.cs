@@ -32,6 +32,13 @@ namespace ConsoleProject_2
         public int criticalDamage;
     }
 
+    //플레이어가 착용한 아이템
+    struct Equipment
+    {
+        public PlayerItem[] myItem;
+        public Potion myPotion;
+    }
+
 
     internal class Player
     {
@@ -62,6 +69,12 @@ namespace ConsoleProject_2
         //캐릭터 자체의 스탯 + 아이템 스탯<-향후 아이템 추가 후 메서드 추가
         public Status myTotalStatus;
 
+        //인벤토리
+        public Inventory inventory;
+
+        //착용 장비
+        Equipment equipment;
+
         public Player(bool test)
         { 
         }
@@ -90,6 +103,7 @@ namespace ConsoleProject_2
 
             //이거도 테스트용
             Jump();
+
         }
 
         public void SetCharacterPos(string[] s)
@@ -354,8 +368,14 @@ namespace ConsoleProject_2
         {
             name = "모험가";
 
+            //초기 스탯 설정
             myBaseStatus = InitBaseStatus();
             myTotalStatus = InitBaseStatus();
+
+            //초기 인벤토리와 장비 설정
+            inventory = new Inventory();
+
+            InitBaseEquipment();
         }
         #endregion
 
@@ -369,6 +389,18 @@ namespace ConsoleProject_2
             int attack = 0;
             int criticalRate = 0;
             int criticalDamage = 0;
+
+
+            //아이템 수치만큼 추가
+            for (int i = 0; i < equipment.myItem.Length; i++)
+            {
+                hp += equipment.myItem[i].hp;
+                mp += equipment.myItem[i].mp;
+                defence += equipment.myItem[i].defence;
+                attack += equipment.myItem[i].attack;
+                criticalRate += equipment.myItem[i].criticalRate;
+                criticalDamage += equipment.myItem[i].criticalDamage;
+            }
 
             myTotalStatus.hp = myBaseStatus.hp + hp;
             myTotalStatus.mp = myBaseStatus.mp + mp;
@@ -514,6 +546,8 @@ namespace ConsoleProject_2
             SetTotalStatus();
             Console.WriteLine();
         }
+
+
         public void SetMyCharacterOnStart()
         {
             SetMyName();
@@ -559,6 +593,16 @@ namespace ConsoleProject_2
             ShowMyCharacter();
         }
 
+        public void InitBaseEquipment()
+        {
+            equipment.myItem = new PlayerItem[5];
+            for (int i = 0; i < equipment.myItem.Length; i++)
+            {
+                equipment.myItem[i] = new PlayerItem();
+            }
+            equipment.myPotion = new Potion();
+        }
+
         public void ShowMyCharacter()
         {
             Console.Clear();
@@ -592,15 +636,163 @@ namespace ConsoleProject_2
 
         //마을로 이동하는 메서드
         public void OnVillage()
-        { }
+        {
+            int myInt;
+            Console.Clear();
+            Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     시 작 의           마 을      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine("어디로 향하시겠습니까?");
+            Console.WriteLine("0. 내 캐릭터 정보");
+            Console.WriteLine("1. 상점");
+            Console.WriteLine("2. 모험");
+            Console.WriteLine("그 이외의 숫자 입력시 마을로 복귀합니다.");
+            Console.WriteLine("\n원하는 번호를 입력하세요");
+            Console.Write("▶ ");
+            myInt = Read.ReadUInt(0);
+            if (myInt > 2)
+            {
+                OnVillage();
+            }
+            else if (myInt == 0)
+            {
+                ShowMyCharacter();
+            }
+            else if (myInt == 1)
+            {
+                OnShop();
+            }
+            else if (myInt == 2)
+            {
+                OnAdventure();
+            }
+        }
 
-        //착용중인 장비를 보여주는 메서드
-        public void ShowMyEquipment()
-        { }
+        //상점으로 이동
+        public void OnShop()
+        {
+            Console.Clear();
+            int myInt;
+            Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷        S     h     o     p        ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.Write("▶ ");
+            myInt = Read.ReadUInt(0);
+            if (myInt > 0)
+            {
+                OnVillage();
+            }
+        }
+
+        //모험으로 이동
+        public void OnAdventure()
+        {
+            Console.Clear();
+            int myInt;
+            Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         A d v e n t u r e         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.Write("▶ ");
+            myInt = Read.ReadUInt(0);
+            if (myInt > 0)
+            {
+                OnVillage();
+            }
+        }
 
         //인벤토리 내용물을 보여주는 메서드
         public void ShowMyInventory()
-        { }
+        {
+            Console.Clear();
+            ConsoleKeyInfo key;
+            bool returnPage = true;
+
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         I n v e n t o r y         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            for (int i = 0; i < inventory.inventoryItem.Length; i++)
+            {
+                Console.WriteLine($"[{i + 1}]번 장비 인벤토리 ");
+                if (inventory.inventoryItem[i].name == "")
+                {
+                    Console.WriteLine($"비어있습니다\n");
+                }
+                else
+                {
+                    Console.WriteLine($"이름 : {inventory.inventoryItem[i].name}\n");
+                }
+
+            }
+
+            for (int i = 0; i < inventory.inventoryPotion.Length; i++)
+            {
+                Console.WriteLine($"[{i + 1}]번 포션 인벤토리");
+                if (inventory.inventoryPotion[i].name == "")
+                {
+                    Console.WriteLine("비어있습니다\n");
+                }
+                else
+                {
+                    Console.WriteLine($"이름 : {inventory.inventoryPotion[i].name}\n");
+                }
+
+            }
+
+            Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
+            while (returnPage)
+            {
+                key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        returnPage = false;
+                        break;
+                }
+            }
+            ShowMyCharacter();
+        }
+
+        //착용중인 장비를 보여주는 메서드
+        public void ShowMyEquipment()
+        {
+
+            Console.Clear();
+            ConsoleKeyInfo key;
+            bool returnPage = true;
+
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         E q u i p m e n t         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            for (int i = 0; i < equipment.myItem.Length; i++)
+            {
+                Console.WriteLine($"[{i + 1}]번 장비 ");
+                if (equipment.myItem[i].name == "")
+                {
+                    Console.WriteLine($"비어있습니다\n");
+                }
+                else
+                {
+                    Console.WriteLine($"이름 : {equipment.myItem[i].name}\n");
+                }
+            }
+
+
+            Console.WriteLine("[포션 주머니]");
+            if (equipment.myPotion.name == "")
+            {
+                Console.WriteLine($"비어있습니다\n");
+            }
+            else
+            {
+                Console.WriteLine($"이름 : {equipment.myPotion.name}\n");
+            }
+
+
+            Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
+            while (returnPage)
+            {
+                key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        returnPage = false;
+                        break;
+                }
+            }
+            ShowMyCharacter();
+        }
 
 
         public void onGame()
