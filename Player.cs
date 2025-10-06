@@ -10,11 +10,7 @@ namespace ConsoleProject_2
 {
     enum Direction
     { left, right, up, down }
-    //struct MyPos
-    //{
-    //    public int[] x;
-    //    public int[] y;
-    //}
+
     struct MyPos
     {
         public int x;
@@ -44,14 +40,12 @@ namespace ConsoleProject_2
     {
         string name;
         Direction dir;
-        //// 스레드에서 쓰려면 static으로 만들어야 하네...
-        //static string[] playerImage;
-        //static string[] eraserplayerImage;
+
         static string[] playerImage;
         static string[] eraserplayerImage;
 
         bool onHuntingArea;
-        //더블점프 포기하고 그냥 점프중엔 조작 안되게 만들기 위함
+        //더블점프 포기하고 그냥 점프중엔 다시 점프 조작 안되게 만들기 위함
         bool onJump;
         public string Name
         {
@@ -90,19 +84,19 @@ namespace ConsoleProject_2
             eraserplayerImage[1] = "        ";
             pos.x = 100;
             pos.y = 30;
-            SetCharacterPos(playerImage);
+            //SetCharacterPos(playerImage);
 
-            //일단 테스트용이라 현재는 true로 둔거고
-            //나중엔 사냥터 갔을 때만 true로 바꿀 예정
-            onHuntingArea = true;
-            //이거도 테스트용이라 지금 여기서 실행하는 거임
-            Gravity();
+            ////일단 테스트용이라 현재는 true로 둔거고
+            ////나중엔 사냥터 갔을 때만 true로 바꿀 예정
+            //onHuntingArea = true;
+            ////이거도 테스트용이라 지금 여기서 실행하는 거임
+            //Gravity();
 
-            //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
-            onJump = true;
+            ////일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
+            //onJump = true;
 
-            //이거도 테스트용
-            Jump();
+            ////이거도 테스트용
+            //Jump();
 
         }
 
@@ -637,6 +631,8 @@ namespace ConsoleProject_2
         //마을로 이동하는 메서드
         public void OnVillage()
         {
+
+
             int myInt;
             Console.Clear();
             Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     시 작 의           마 을      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
@@ -646,24 +642,37 @@ namespace ConsoleProject_2
             Console.WriteLine("2. 모험");
             Console.WriteLine("그 이외의 숫자 입력시 마을로 복귀합니다.");
             Console.WriteLine("\n원하는 번호를 입력하세요");
-            Console.Write("▶ ");
-            myInt = Read.ReadUInt(0);
-            if (myInt > 2)
-            {
-                OnVillage();
-            }
-            else if (myInt == 0)
-            {
-                ShowMyCharacter();
-            }
-            else if (myInt == 1)
-            {
-                OnShop();
-            }
-            else if (myInt == 2)
-            {
-                OnAdventure();
-            }
+            //Console.Write("▶ ");
+            //myInt = Read.ReadUInt(0);
+            //if (myInt > 2)
+            //{
+            //    OnVillage();
+            //}
+            //else if (myInt == 0)
+            //{
+            //    ShowMyCharacter();
+            //}
+            //else if (myInt == 1)
+            //{
+            //    OnShop();
+            //}
+            //else if (myInt == 2)
+            //{
+            //    OnAdventure();
+            //}
+            SetCharacterPos(playerImage);
+
+            //일단 테스트용이라 현재는 true로 둔거고
+            //나중엔 사냥터 갔을 때만 true로 바꿀 예정
+            onHuntingArea = true;
+            //이거도 테스트용이라 지금 여기서 실행하는 거임
+            Gravity();
+
+            //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
+            onJump = true;
+
+            //이거도 테스트용
+            Jump();
         }
 
         //상점으로 이동
@@ -806,7 +815,10 @@ namespace ConsoleProject_2
 
             Console.Clear();
 
-            ShowMyCharacter();
+            //처음에 캐릭터 정보를 보여주는 것이 아닌 마을로 이동
+            //ShowMyCharacter();
+
+            OnVillage();
 
 
         }

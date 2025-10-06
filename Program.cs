@@ -22,8 +22,8 @@ namespace ConsoleProject_2
         static void Main(string[] args)
         {
 
-           // GameSetting.WindowSetting(200, 60);
-            GameSetting.ShowTitle();
+           GameSetting.WindowSetting(200, 60);
+            //GameSetting.ShowTitle();
 
             bool gameStart = false;
             ConsoleKeyInfo key;
@@ -42,7 +42,7 @@ namespace ConsoleProject_2
                     break;
                 }
             }
-            Player player = new Player(gameStart);
+            Player player = new Player();
             player.onGame();
 
 
