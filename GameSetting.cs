@@ -26,7 +26,7 @@ namespace ConsoleProject_2
 
             ShowTitle();
             //맵 크기 = 윈도우 콘솔창 크기
-            //Map.InitMap(width, height);
+            Map.InitMap(width, height);
         }
 
 

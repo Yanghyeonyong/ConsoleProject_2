@@ -203,7 +203,7 @@ namespace ConsoleProject_2
             };
             jump.RunWorkerCompleted += (sender, e) =>
             {
-
+                jump=null;
             };
             jump.RunWorkerAsync();
         }
@@ -660,6 +660,7 @@ namespace ConsoleProject_2
             //{
             //    OnAdventure();
             //}
+            Map.InitBaseMap();
             SetCharacterPos(playerImage);
 
             //일단 테스트용이라 현재는 true로 둔거고

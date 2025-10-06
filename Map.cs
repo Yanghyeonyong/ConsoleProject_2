@@ -55,7 +55,8 @@ namespace ConsoleProject_2
         {
 
             baseMap= new bool[width, height];
-            InitBaseMap();
+            //이건 당장 필요한 메서드는 아니므로 주석처리
+            //InitBaseMap();
 
 
             playerMap = new bool[width, height];
@@ -65,26 +66,6 @@ namespace ConsoleProject_2
 
         public static void InitBaseMap()
         {
-            //for (int i = 0; i < baseMap.GetLength(1);i++)
-            //{
-            //    Console.WriteLine("■");
-            //}
-            ////특수문자라 2씩 올린다
-            //Console.SetCursorPosition(0, 0);
-            //for (int i = 0; i < baseMap.GetLength(0);i+=2)
-            //{
-            //    Console.Write("■");
-            //}
-            //for (int i = 0; i < baseMap.GetLength(1);i++)
-            //{
-            //    Console.SetCursorPosition(baseMap.GetLength(0)-2,i);
-            //    Console.WriteLine("■");
-            //}
-            //Console.SetCursorPosition(0,baseMap.GetLength(1)-1);
-            //for (int i = 0; i < baseMap.GetLength(0);i+=2)
-            //{
-            //    Console.Write("■");
-            //}
             for (int i = 0; i < baseMap.GetLength(1); i++)
             {
                 baseMap[0,i] = true;
