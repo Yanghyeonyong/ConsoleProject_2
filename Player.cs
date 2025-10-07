@@ -170,6 +170,80 @@ namespace ConsoleProject_2
 
         }
 
+
+        public void ControlPlayer()
+        {
+            BackgroundWorker control = new BackgroundWorker();
+            ConsoleKeyInfo key;
+            control.DoWork += (sender, e) =>
+            {
+                while (true)
+                {
+                    key = Console.ReadKey(true);
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.UpArrow:
+                            if (!onHuntingArea)
+                            {
+                                MoveUp();
+                            }
+                            break;
+                        case ConsoleKey.DownArrow:
+                            MoveDown();
+                            break;
+                        case ConsoleKey.LeftArrow:
+                            MoveLeft();
+                            break;
+                        case ConsoleKey.RightArrow:
+                            MoveRight();
+                            break;
+                        case ConsoleKey.A:
+                            Attack(1, 1, 1, 1);
+                            break;
+                    }
+                }
+            };
+            control.RunWorkerCompleted += (sender, e) =>
+            {
+                control=null;
+            };
+            control.RunWorkerAsync();
+        }
+        public void TeleportPlayer()
+        {
+            BackgroundWorker teleport = new BackgroundWorker();
+            ConsoleKeyInfo key;
+            teleport.DoWork += (sender, e) =>
+            {
+                while (true)
+                {
+                    key = Console.ReadKey(true);
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.Spacebar:
+                            if (Map.shopPortal[pos.x, pos.y])
+                            {
+                                OnShop();
+                            }
+                            if (Map.adventurePortal[pos.x, pos.y])
+                            {
+                                OnAdventure();
+                            }
+                            if (Map.homePortal[pos.x, pos.y])
+                            {
+                                ShowMyCharacter();
+                            }
+                            break;
+                    }
+                }
+            };
+            teleport.RunWorkerCompleted += (sender, e) =>
+            {
+                teleport=null;
+            };
+            teleport.RunWorkerAsync();
+        }
+
         //전방 점프같은 경우 어떻게 구현하지
         //백그라운드로 구현
         //현재 점프를 반복할경우 일정 확률로 캐릭터의 이미지가 지워지지 않고 남아있는 것을 확인
@@ -663,13 +737,18 @@ namespace ConsoleProject_2
             //    OnAdventure();
             //}
             Map.InitBaseMap();
+
+            Map.MakePortal(0, 65, 25, 31, Map.adventurePortal);
+            Map.MakePortal(147, 182, 28, 34, Map.shopPortal);
+            Map.MakePortal(81, 116, 52, 58, Map.homePortal);
+
             Console.Clear();
             Map.DrawVillageMap();
             SetCharacterPos(playerImage);
 
             //일단 테스트용이라 현재는 true로 둔거고
             //나중엔 사냥터 갔을 때만 true로 바꿀 예정
-            onHuntingArea = true;
+            onHuntingArea = false;
             //이거도 테스트용이라 지금 여기서 실행하는 거임
             Gravity();
 
@@ -822,7 +901,8 @@ namespace ConsoleProject_2
 
             //처음에 캐릭터 정보를 보여주는 것이 아닌 마을로 이동
             //ShowMyCharacter();
-
+            ControlPlayer();
+            TeleportPlayer();
             OnVillage();
 
 

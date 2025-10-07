@@ -50,29 +50,33 @@ namespace ConsoleProject_2
 
             Monster monster = new Monster();
 
-            while (true)
+            bool gamePlay = true;
+            while (gamePlay)
             {
-                key = Console.ReadKey(true);
-                switch (key.Key)
-                {
-                    case ConsoleKey.UpArrow:
-                        //player.MoveUp();
-                        break;
-                    case ConsoleKey.DownArrow:
-                        player.MoveDown();
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        player.MoveLeft();
-                        break;
-                    case ConsoleKey.RightArrow:
-                        player.MoveRight();
-                        break;
-                    case ConsoleKey.A:
-                        player.Attack(1, 1, 1, 1);
-                        break;
-                }
-
             }
+            //while (true)
+            //{
+            //    key = Console.ReadKey(true);
+            //    switch (key.Key)
+            //    {
+            //        case ConsoleKey.UpArrow:
+            //            player.MoveUp();
+            //            break;
+            //        case ConsoleKey.DownArrow:
+            //            player.MoveDown();
+            //            break;
+            //        case ConsoleKey.LeftArrow:
+            //            player.MoveLeft();
+            //            break;
+            //        case ConsoleKey.RightArrow:
+            //            player.MoveRight();
+            //            break;
+            //        case ConsoleKey.A:
+            //            player.Attack(1, 1, 1, 1);
+            //            break;
+            //    }
+
+            //}
 
         }
     }

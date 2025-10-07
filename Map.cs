@@ -51,6 +51,10 @@ namespace ConsoleProject_2
             }
         }
 
+        public static bool[,] homePortal;
+        public static bool[,] adventurePortal;
+        public static bool[,] shopPortal;
+
         public static void InitMap(int width, int height)
         {
 
@@ -62,6 +66,10 @@ namespace ConsoleProject_2
             playerMap = new bool[width, height];
             monsterMap = new bool[width, height];
             attackMap = new bool[width, height];
+
+            homePortal = new bool[width, height];
+            adventurePortal = new bool[width, height];
+            shopPortal = new bool[width, height];   
         }
 
         public static void InitBaseMap()
@@ -222,5 +230,16 @@ namespace ConsoleProject_2
                 "           *###%#* *                                                            **=**#***#****+++*+**#*+==+++**++++*#+*=*+**++*                                                          **+****       ");
         }
 
+
+        public static void MakePortal(int minX, int maxX, int minY, int maxY, bool[,] portal)
+        {
+            for (int i = minX; i <= maxX; i++)
+            {
+                for (int j = minY; j <= maxY; j++)
+                {
+                    portal[i, j] = true;
+                }
+            }
+        }
     }
 }
