@@ -23,7 +23,7 @@ namespace ConsoleProject_2
         {
 
            GameSetting.WindowSetting(200, 60);
-            //GameSetting.ShowTitle();
+
 
             bool gameStart = false;
             ConsoleKeyInfo key;
@@ -42,10 +42,10 @@ namespace ConsoleProject_2
                     break;
                 }
             }
-            
+
             Player player = new Player();
 
-            
+
             player.onGame();
 
             Monster monster = new Monster();
@@ -54,29 +54,6 @@ namespace ConsoleProject_2
             while (gamePlay)
             {
             }
-            //while (true)
-            //{
-            //    key = Console.ReadKey(true);
-            //    switch (key.Key)
-            //    {
-            //        case ConsoleKey.UpArrow:
-            //            player.MoveUp();
-            //            break;
-            //        case ConsoleKey.DownArrow:
-            //            player.MoveDown();
-            //            break;
-            //        case ConsoleKey.LeftArrow:
-            //            player.MoveLeft();
-            //            break;
-            //        case ConsoleKey.RightArrow:
-            //            player.MoveRight();
-            //            break;
-            //        case ConsoleKey.A:
-            //            player.Attack(1, 1, 1, 1);
-            //            break;
-            //    }
-
-            //}
 
         }
     }
