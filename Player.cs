@@ -128,6 +128,10 @@ namespace ConsoleProject_2
                     pos.y++;
                     break;
             }
+
+            //이동할 때마다 지워지는 거 방지를 위해 
+            Map.DrawVillageMap();
+
             SetCharacterPos(playerImage);
         }
 
@@ -631,8 +635,6 @@ namespace ConsoleProject_2
         //마을로 이동하는 메서드
         public void OnVillage()
         {
-
-
             int myInt;
             Console.Clear();
             Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     시 작 의           마 을      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
@@ -661,6 +663,8 @@ namespace ConsoleProject_2
             //    OnAdventure();
             //}
             Map.InitBaseMap();
+            Console.Clear();
+            Map.DrawVillageMap();
             SetCharacterPos(playerImage);
 
             //일단 테스트용이라 현재는 true로 둔거고
