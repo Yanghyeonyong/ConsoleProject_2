@@ -21,11 +21,11 @@ namespace ConsoleProject_2
     struct Status
     {
         public int hp;
-        public int mp;
+        //public int mp;
         public int defence;
         public int attack;
-        public int criticalRate;
-        public int criticalDamage;
+        //public int criticalRate;
+        //public int criticalDamage;
     }
 
     //플레이어가 착용한 아이템
@@ -45,6 +45,7 @@ namespace ConsoleProject_2
         static string[] eraserplayerImage;
 
         bool onHuntingArea;
+        bool onVillage;
         //더블점프 포기하고 그냥 점프중엔 다시 점프 조작 안되게 만들기 위함
         bool onJump;
         public string Name
@@ -179,27 +180,49 @@ namespace ConsoleProject_2
             {
                 while (true)
                 {
-                    key = Console.ReadKey(true);
-                    switch (key.Key)
+                    if (Console.KeyAvailable)
                     {
-                        case ConsoleKey.UpArrow:
-                            if (!onHuntingArea)
+                        if (onVillage || onHuntingArea)
+                        {
+                            key = Console.ReadKey(true);
+                            switch (key.Key)
                             {
-                                MoveUp();
+                                case ConsoleKey.UpArrow:
+                                    if (!onHuntingArea)
+                                    {
+                                        MoveUp();
+                                    }
+                                    break;
+                                case ConsoleKey.DownArrow:
+                                    MoveDown();
+                                    break;
+                                case ConsoleKey.LeftArrow:
+                                    MoveLeft();
+                                    break;
+                                case ConsoleKey.RightArrow:
+                                    MoveRight();
+                                    break;
+                                case ConsoleKey.A:
+                                    Attack(3, 0, 0, 0);
+                                    break;
+                                case ConsoleKey.Spacebar:
+                                    if (Map.shopPortal[pos.x, pos.y])
+                                    {
+                                        onVillage = false;
+                                        OnShop();
+                                    }
+                                    if (Map.adventurePortal[pos.x, pos.y])
+                                    {
+                                        OnAdventure();
+                                    }
+                                    if (Map.homePortal[pos.x, pos.y])
+                                    {
+                                        onVillage = false;
+                                        ShowMyCharacter();
+                                    }
+                                    break;
                             }
-                            break;
-                        case ConsoleKey.DownArrow:
-                            MoveDown();
-                            break;
-                        case ConsoleKey.LeftArrow:
-                            MoveLeft();
-                            break;
-                        case ConsoleKey.RightArrow:
-                            MoveRight();
-                            break;
-                        case ConsoleKey.A:
-                            Attack(1, 1, 1, 1);
-                            break;
+                        }
                     }
                 }
             };
@@ -209,39 +232,75 @@ namespace ConsoleProject_2
             };
             control.RunWorkerAsync();
         }
+
+        //무기 백그라운드 메서드 분리 <- 같이 쓰니까 동시에 행동을 못함
+        public void ControlAttack()
+        {
+            //BackgroundWorker attack = new BackgroundWorker();
+            //ConsoleKeyInfo key;
+            //attack.DoWork += (sender, e) =>
+            //{
+            //    while (true)
+            //    {
+            //        if (Console.KeyAvailable)
+            //        {
+            //            if (onVillage || onHuntingArea)
+            //            {
+            //                key = Console.ReadKey(true);
+            //                switch (key.Key)
+            //                {
+            //                    case ConsoleKey.A:
+            //                        Attack(3, 0, 0, 0);
+            //                        break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //};
+            //attack.RunWorkerCompleted += (sender, e) =>
+            //{
+            //    attack=null;
+            //};
+            //attack.RunWorkerAsync();
+        }
         public void TeleportPlayer()
         {
-            BackgroundWorker teleport = new BackgroundWorker();
-            ConsoleKeyInfo key;
-            teleport.DoWork += (sender, e) =>
-            {
-                while (true)
-                {
-                    key = Console.ReadKey(true);
-                    switch (key.Key)
-                    {
-                        case ConsoleKey.Spacebar:
-                            if (Map.shopPortal[pos.x, pos.y])
-                            {
-                                OnShop();
-                            }
-                            if (Map.adventurePortal[pos.x, pos.y])
-                            {
-                                OnAdventure();
-                            }
-                            if (Map.homePortal[pos.x, pos.y])
-                            {
-                                ShowMyCharacter();
-                            }
-                            break;
-                    }
-                }
-            };
-            teleport.RunWorkerCompleted += (sender, e) =>
-            {
-                teleport=null;
-            };
-            teleport.RunWorkerAsync();
+            //BackgroundWorker teleport = new BackgroundWorker();
+            //ConsoleKeyInfo key;
+            //teleport.DoWork += (sender, e) =>
+            //{
+            //    while (true)
+            //    {
+            //        if (Console.KeyAvailable)
+            //        {
+            //            key = Console.ReadKey(true);
+            //            switch (key.Key)
+            //            {
+            //                case ConsoleKey.Spacebar:
+            //                    if (Map.shopPortal[pos.x, pos.y])
+            //                    {
+            //                        onVillage = false;
+            //                        OnShop();
+            //                    }
+            //                    if (Map.adventurePortal[pos.x, pos.y])
+            //                    {
+            //                        OnAdventure();
+            //                    }
+            //                    if (Map.homePortal[pos.x, pos.y])
+            //                    {
+            //                        onVillage = false;
+            //                        ShowMyCharacter();
+            //                    }
+            //                    break;
+            //            }
+            //        }
+            //    }
+            //};
+            //teleport.RunWorkerCompleted += (sender, e) =>
+            //{
+            //    teleport=null;
+            //};
+            //teleport.RunWorkerAsync();
         }
 
         //전방 점프같은 경우 어떻게 구현하지
@@ -428,10 +487,10 @@ namespace ConsoleProject_2
             Status baseStatus;
             baseStatus.defence = 10;
             baseStatus.attack = 10;
-            baseStatus.criticalRate = 0;
-            baseStatus.criticalDamage = 20;
+            //baseStatus.criticalRate = 0;
+            //baseStatus.criticalDamage = 20;
             baseStatus.hp = 50;
-            baseStatus.mp = 10;
+            //baseStatus.mp = 10;
 
             return baseStatus;
         }
@@ -456,30 +515,30 @@ namespace ConsoleProject_2
         {
             //향후 해당 값들에 아이템 스탯 추가 예정
             int hp = 0;
-            int mp = 0;
+            //int mp = 0;
             int defence = 0;
             int attack = 0;
-            int criticalRate = 0;
-            int criticalDamage = 0;
+            //int criticalRate = 0;
+            //int criticalDamage = 0;
 
 
             //아이템 수치만큼 추가
             for (int i = 0; i < equipment.myItem.Length; i++)
             {
                 hp += equipment.myItem[i].hp;
-                mp += equipment.myItem[i].mp;
+                //mp += equipment.myItem[i].mp;
                 defence += equipment.myItem[i].defence;
                 attack += equipment.myItem[i].attack;
-                criticalRate += equipment.myItem[i].criticalRate;
-                criticalDamage += equipment.myItem[i].criticalDamage;
+                //criticalRate += equipment.myItem[i].criticalRate;
+                //criticalDamage += equipment.myItem[i].criticalDamage;
             }
 
             myTotalStatus.hp = myBaseStatus.hp + hp;
-            myTotalStatus.mp = myBaseStatus.mp + mp;
+            //myTotalStatus.mp = myBaseStatus.mp + mp;
             myTotalStatus.defence = myBaseStatus.defence + defence;
             myTotalStatus.attack = myBaseStatus.attack + attack;
-            myTotalStatus.criticalRate = myBaseStatus.criticalRate + criticalRate;
-            myTotalStatus.criticalDamage = myBaseStatus.criticalDamage + criticalDamage;
+            //myTotalStatus.criticalRate = myBaseStatus.criticalRate + criticalRate;
+            //myTotalStatus.criticalDamage = myBaseStatus.criticalDamage + criticalDamage;
         }
 
 
@@ -572,9 +631,9 @@ namespace ConsoleProject_2
                 Console.Write("HP(최소 1) : ");
                 SetMyStatusDetail(ref myBaseStatus.hp, ref statPoint, 1);
 
-                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("MP : ");
-                SetMyStatusDetail(ref myBaseStatus.mp, ref statPoint, 0);
+                //Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                //Console.Write("MP : ");
+                //SetMyStatusDetail(ref myBaseStatus.mp, ref statPoint, 0);
 
                 Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
                 Console.Write("공격력 : ");
@@ -584,13 +643,13 @@ namespace ConsoleProject_2
                 Console.Write("방어력 : ");
                 SetMyStatusDetail(ref myBaseStatus.defence, ref statPoint, 0);
 
-                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("크리티컬 확률 : ");
-                SetMyStatusDetail(ref myBaseStatus.criticalRate, ref statPoint, 0);
+                //Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                //Console.Write("크리티컬 확률 : ");
+                //SetMyStatusDetail(ref myBaseStatus.criticalRate, ref statPoint, 0);
 
-                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("크리티컬 데미지 : ");
-                SetMyStatusDetail(ref myBaseStatus.criticalDamage, ref statPoint, 0);
+                //Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                //Console.Write("크리티컬 데미지 : ");
+                //SetMyStatusDetail(ref myBaseStatus.criticalDamage, ref statPoint, 0);
 
                 Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");
                 while (setStatus)
@@ -636,19 +695,19 @@ namespace ConsoleProject_2
             Console.WriteLine($"이름 : {name}");
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷        B a s e S t a t u s        ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
             Console.WriteLine($"HP : {myBaseStatus.hp}");
-            Console.WriteLine($"MP : {myBaseStatus.mp}");
+            //Console.WriteLine($"MP : {myBaseStatus.mp}");
             Console.WriteLine($"공격력 : {myBaseStatus.attack}");
             Console.WriteLine($"방어력 : {myBaseStatus.defence}");
-            Console.WriteLine($"크리티컬 확률 : {myBaseStatus.criticalRate}");
-            Console.WriteLine($"크리티컬 데미지 : {myBaseStatus.criticalDamage}");
+            //Console.WriteLine($"크리티컬 확률 : {myBaseStatus.criticalRate}");
+            //Console.WriteLine($"크리티컬 데미지 : {myBaseStatus.criticalDamage}");
 
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷       T o t a l S t a t u s       ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
             Console.WriteLine($"HP : {myTotalStatus.hp}");
-            Console.WriteLine($"MP : {myTotalStatus.mp}");
+            //Console.WriteLine($"MP : {myTotalStatus.mp}");
             Console.WriteLine($"공격력 : {myTotalStatus.attack}");
             Console.WriteLine($"방어력 : {myTotalStatus.defence}");
-            Console.WriteLine($"크리티컬 확률 : {myTotalStatus.criticalRate}");
-            Console.WriteLine($"크리티컬 데미지 : {myTotalStatus.criticalDamage}");
+            //Console.WriteLine($"크리티컬 확률 : {myTotalStatus.criticalRate}");
+            //Console.WriteLine($"크리티컬 데미지 : {myTotalStatus.criticalDamage}");
 
             Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
             while (returnPage)
@@ -709,7 +768,6 @@ namespace ConsoleProject_2
         //마을로 이동하는 메서드
         public void OnVillage()
         {
-            int myInt;
             Console.Clear();
             Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     시 작 의           마 을      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
             Console.WriteLine("어디로 향하시겠습니까?");
@@ -736,6 +794,7 @@ namespace ConsoleProject_2
             //{
             //    OnAdventure();
             //}
+            onVillage = true;
             Map.InitBaseMap();
 
             Map.MakePortal(0, 65, 25, 31, Map.adventurePortal);
@@ -763,14 +822,76 @@ namespace ConsoleProject_2
         public void OnShop()
         {
             Console.Clear();
+            bool onShop = true;
             int myInt;
-            Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷        S     h     o     p        ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
-            Console.Write("▶ ");
-            myInt = Read.ReadUInt(0);
-            if (myInt > 0)
+            Console.WriteLine(" ____  _   _  ___  ____  \r\n/ ___|| | | |/ _ \\|  _ \\ \r\n\\___ \\| |_| | | | | |_) |\r\n ___) |  _  | |_| |  __/ \r\n|____/|_| |_|\\___/|_|  ");
+            Console.WriteLine("\n0. 마을로 귀환");
+            Console.WriteLine("\n1. 목검 : 500 G");
+            Console.WriteLine("\n2. 철검 : 800 G");
+            Console.WriteLine("\n3. 바람의 검 : 2,000 G");
+            Console.WriteLine("\n4. 용사의 검 : 10,000 G");
+            Console.WriteLine("\n5. 체력 포션 : 50 G");
+            Console.WriteLine("\n현재 자본 : "+inventory.money);
+
+
+            while (onShop)
             {
-                OnVillage();
+                Console.Write("▶ ");
+                myInt = Read.ReadUInt(0);
+                switch (myInt)
+                {
+                    case 0:
+                        onShop = false;
+                        break;
+                        case 1:
+                        if (inventory.money >= 500)
+                        {
+                            inventory.inventoryItem.Add(new PlayerItem("목검", 3, 0, 0, ItemType.Weapon));
+                            inventory.money-= 500;
+                            Console.WriteLine("[무기 : 목검]을 구매하였습니다.");
+                            Console.WriteLine("현재 자본 : " + inventory.money + "\n");
+                        }
+                            break;
+                        case 2:
+                        if (inventory.money >= 800)
+                        {
+                            inventory.inventoryItem.Add(new PlayerItem("철검", 8, 0, 0, ItemType.Weapon));
+                            inventory.money -= 800;
+                            Console.WriteLine("[무기 : 철검]을 구매하였습니다.");
+                            Console.WriteLine("현재 자본 : " + inventory.money + "\n");
+                        }
+                            break;
+                        case 3:
+                        if (inventory.money >= 2000)
+                        {
+                            inventory.inventoryItem.Add(new PlayerItem("바람의 검", 20, 10, 5, ItemType.Weapon));
+                            inventory.money -= 2000;
+                            Console.WriteLine("[무기 : 바람의 검]을 구매하였습니다.");
+                            Console.WriteLine("현재 자본 : " + inventory.money + "\n");
+                        }
+                        break;
+                        case 4:
+                        if (inventory.money >= 10000)
+                        {
+                            inventory.inventoryItem.Add(new PlayerItem("용사의 검", 100, 50, 30, ItemType.Weapon));
+                            inventory.money -= 10000;
+                            Console.WriteLine("[무기 : 용사의 검]을 구매하였습니다.");
+                            Console.WriteLine("현재 자본 : " + inventory.money + "\n");
+                        }
+                        break;
+                    case 5:
+                        if (inventory.money >= 50)
+                        {
+                            inventory.inventoryPotion.Add(new Potion("체력 포션", 50));
+                            inventory.money -= 50;
+                            Console.WriteLine("[포션 : 체력 포션]을 구매하였습니다.");
+                            Console.WriteLine("현재 자본 : " + inventory.money+"\n");
+                        }
+                        break;
+                }
             }
+
+            OnVillage();
         }
 
         //모험으로 이동
@@ -795,7 +916,7 @@ namespace ConsoleProject_2
             bool returnPage = true;
 
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         I n v e n t o r y         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
-            for (int i = 0; i < inventory.inventoryItem.Length; i++)
+            for (int i = 0; i < inventory.inventoryItem.Count; i++)
             {
                 Console.WriteLine($"[{i + 1}]번 장비 인벤토리 ");
                 if (inventory.inventoryItem[i].name == "")
@@ -809,7 +930,7 @@ namespace ConsoleProject_2
 
             }
 
-            for (int i = 0; i < inventory.inventoryPotion.Length; i++)
+            for (int i = 0; i < inventory.inventoryPotion.Count; i++)
             {
                 Console.WriteLine($"[{i + 1}]번 포션 인벤토리");
                 if (inventory.inventoryPotion[i].name == "")
@@ -902,6 +1023,7 @@ namespace ConsoleProject_2
             //처음에 캐릭터 정보를 보여주는 것이 아닌 마을로 이동
             //ShowMyCharacter();
             ControlPlayer();
+            ControlAttack();
             TeleportPlayer();
             OnVillage();
 
