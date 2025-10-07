@@ -113,7 +113,6 @@ namespace ConsoleProject_2
         {
             Map.SetPlayerMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
-
             Console.Write(s[0]);
             Console.SetCursorPosition(pos.x, pos.y + 1);
             Console.Write(s[1]);
@@ -121,7 +120,33 @@ namespace ConsoleProject_2
 
         public void Move(Direction dir)
         {
-            SetCharacterPos(eraserplayerImage);
+            if (onVillage)
+            {
+                Console.SetCursorPosition(pos.x, pos.y);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.villageMap[pos.x + i, pos.y]);
+                }
+                Console.SetCursorPosition(pos.x, pos.y+1);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.villageMap[pos.x + i, pos.y+1]);
+                }
+            }
+            else if (onAdventure)
+            {
+                Console.SetCursorPosition(pos.x, pos.y);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.adventureMap[pos.x + i, pos.y]);
+                }
+                Console.SetCursorPosition(pos.x, pos.y+1);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.adventureMap[pos.x + i, pos.y+1]);
+                }
+            }
+
             switch (dir)
             {
                 case Direction.left:
@@ -138,17 +163,18 @@ namespace ConsoleProject_2
                     break;
             }
 
-            //이동할 때마다 지워지는 거 방지를 위해 
-            if (onVillage)
-            {
-                Map.DrawVillageMap();
-            }
-            else if (onAdventure)
-            {
-                Map.DrawAdventureMap();
-            }
+            ////이동할 때마다 지워지는 거 방지를 위해
+            //// 렉이 너무 걸려서 하나씩 지우도록 변경
+            //if (onVillage)
+            //{
+            //    Map.DrawVillageMap();
+            //}
+            //else if (onAdventure)
+            //{
+            //    Map.DrawAdventureMap();
+            //}
 
-                SetCharacterPos(playerImage);
+            SetCharacterPos(playerImage);
         }
 
         public void MoveLeft()
@@ -454,10 +480,7 @@ namespace ConsoleProject_2
             Status baseStatus;
             baseStatus.defence = 10;
             baseStatus.attack = 10;
-            //baseStatus.criticalRate = 0;
-            //baseStatus.criticalDamage = 20;
             baseStatus.hp = 50;
-            //baseStatus.mp = 10;
 
             return baseStatus;
         }
@@ -482,30 +505,23 @@ namespace ConsoleProject_2
         {
             //향후 해당 값들에 아이템 스탯 추가 예정
             int hp = 0;
-            //int mp = 0;
             int defence = 0;
             int attack = 0;
-            //int criticalRate = 0;
-            //int criticalDamage = 0;
+
 
 
             //아이템 수치만큼 추가
             for (int i = 0; i < equipment.myItem.Length; i++)
             {
                 hp += equipment.myItem[i].hp;
-                //mp += equipment.myItem[i].mp;
                 defence += equipment.myItem[i].defence;
                 attack += equipment.myItem[i].attack;
-                //criticalRate += equipment.myItem[i].criticalRate;
-                //criticalDamage += equipment.myItem[i].criticalDamage;
+
             }
 
             myTotalStatus.hp = myBaseStatus.hp + hp;
-            //myTotalStatus.mp = myBaseStatus.mp + mp;
             myTotalStatus.defence = myBaseStatus.defence + defence;
             myTotalStatus.attack = myBaseStatus.attack + attack;
-            //myTotalStatus.criticalRate = myBaseStatus.criticalRate + criticalRate;
-            //myTotalStatus.criticalDamage = myBaseStatus.criticalDamage + criticalDamage;
         }
 
 
@@ -610,29 +626,13 @@ namespace ConsoleProject_2
                 {
                     myBaseStatus.hp += SetMyStatusDetail(0);
                 }
-                    //SetMyStatusDetail(ref myBaseStatus.hp, ref statPoint, 1);
-
-                    //Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                    //Console.Write("MP : ");
-                    //SetMyStatusDetail(ref myBaseStatus.mp, ref statPoint, 0);
-
                     Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
                 Console.Write("공격력 : ");
                 myBaseStatus.attack += SetMyStatusDetail(1);
-                //SetMyStatusDetail(ref myBaseStatus.attack, ref statPoint, 0);
 
                 Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
                 Console.Write("방어력 : ");
                 myBaseStatus.defence += SetMyStatusDetail(1);
-                //SetMyStatusDetail(ref myBaseStatus.defence, ref statPoint, 0);
-
-                //Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                //Console.Write("크리티컬 확률 : ");
-                //SetMyStatusDetail(ref myBaseStatus.criticalRate, ref statPoint, 0);
-
-                //Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                //Console.Write("크리티컬 데미지 : ");
-                //SetMyStatusDetail(ref myBaseStatus.criticalDamage, ref statPoint, 0);
 
                 Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");
                 while (setStatus)
@@ -656,7 +656,6 @@ namespace ConsoleProject_2
                     break;
                 }
             }
-            Console.WriteLine("여기까지 됨");
             SetTotalStatus();
             Console.WriteLine();
         }
@@ -678,19 +677,13 @@ namespace ConsoleProject_2
             Console.WriteLine($"이름 : {name}");
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷        B a s e S t a t u s        ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
             Console.WriteLine($"HP : {myBaseStatus.hp}");
-            //Console.WriteLine($"MP : {myBaseStatus.mp}");
             Console.WriteLine($"공격력 : {myBaseStatus.attack}");
             Console.WriteLine($"방어력 : {myBaseStatus.defence}");
-            //Console.WriteLine($"크리티컬 확률 : {myBaseStatus.criticalRate}");
-            //Console.WriteLine($"크리티컬 데미지 : {myBaseStatus.criticalDamage}");
 
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷       T o t a l S t a t u s       ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
             Console.WriteLine($"HP : {myTotalStatus.hp}");
-            //Console.WriteLine($"MP : {myTotalStatus.mp}");
             Console.WriteLine($"공격력 : {myTotalStatus.attack}");
             Console.WriteLine($"방어력 : {myTotalStatus.defence}");
-            //Console.WriteLine($"크리티컬 확률 : {myTotalStatus.criticalRate}");
-            //Console.WriteLine($"크리티컬 데미지 : {myTotalStatus.criticalDamage}");
 
             Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
             while (returnPage)
@@ -766,7 +759,7 @@ namespace ConsoleProject_2
             //나중엔 사냥터 갔을 때만 true로 바꿀 예정
             onAdventure = false;
             //이거도 테스트용이라 지금 여기서 실행하는 거임
-            Gravity();
+            //Gravity();
 
             //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
             onJump = true;
@@ -858,18 +851,10 @@ namespace ConsoleProject_2
         {
             onVillage=false;
             onAdventure=true;
-            //Console.Clear();
-            //int myInt;
-            //Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         A d v e n t u r e         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
-            //Console.Write("▶ ");
-            //myInt = Read.ReadUInt(0);
-            //if (myInt > 0)
-            //{
-            //    OnVillage();
-            //}
-            Map.InitBaseMapStage1();
             Map.DrawAdventureMap();
+            Map.InitBaseMapStage1();
             Map.DrawBaseMap();
+            SetCharacterPos(playerImage);
         }
 
         //인벤토리 내용물을 보여주는 메서드
@@ -976,7 +961,7 @@ namespace ConsoleProject_2
         public void onGame()
         {
             Console.Clear();
-
+            Map.SetMap();
             statPoint = 50;
             level = 1;
             SetMaxExp();
