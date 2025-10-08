@@ -30,7 +30,7 @@ namespace ConsoleProject_2
     //플레이어가 착용한 아이템
     struct Equipment
     {
-        public PlayerItem[] myItem;
+        public List<PlayerItem> myItem;
         public Potion myPotion;
     }
 
@@ -71,7 +71,10 @@ namespace ConsoleProject_2
 
         //착용 장비
         Equipment equipment;
+        const int MaxEquipment = 5;
 
+        //현재 체력, 위에는 맥스 체력임
+        int currentHp;
         //경험치 및 레벨
         int level;
         int maxExp;
@@ -155,6 +158,13 @@ namespace ConsoleProject_2
                                     else
                                     {
                                         Attack(0, 3, 0, 0);
+                                    }
+                                    break;
+                                case ConsoleKey.S:
+                                    currentHp += equipment.myPotion.healingHp;
+                                    if (currentHp > myTotalStatus.hp)
+                                    {
+                                        currentHp = myTotalStatus.hp;
                                     }
                                     break;
                                 case ConsoleKey.Spacebar:
@@ -497,11 +507,11 @@ namespace ConsoleProject_2
                     myBaseStatus.hp += SetMyStatusDetail(0);
                     Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
                 Console.Write("공격력(기본 1) : ");
-                myBaseStatus.attack += SetMyStatusDetail(1);
+                myBaseStatus.attack += SetMyStatusDetail(0);
 
                 Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
                 Console.Write("방어력(기본 0) : ");
-                myBaseStatus.defence += SetMyStatusDetail(1);
+                myBaseStatus.defence += SetMyStatusDetail(0);
 
                 Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");
                 while (setStatus)
@@ -530,12 +540,12 @@ namespace ConsoleProject_2
         }
         public void InitBaseEquipment()
         {
-            equipment.myItem = new PlayerItem[5];
-            for (int i = 0; i < equipment.myItem.Length; i++)
-            {
-                equipment.myItem[i] = new PlayerItem();
-            }
-            equipment.myPotion = new Potion();
+            equipment.myItem = new List<PlayerItem>();
+            //for (int i = 0; i < equipment.myItem.Length; i++)
+            //{
+            //    equipment.myItem[i] = new PlayerItem();
+            //}
+            equipment.myPotion = new Potion("체력 포션", 50);
         }
         public void SetMyCharacterOnStart()
         {
@@ -594,7 +604,7 @@ namespace ConsoleProject_2
             Console.WriteLine($"방어력 : {myBaseStatus.defence}");
 
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷       T o t a l S t a t u s       ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
-            Console.WriteLine($"HP : {myTotalStatus.hp}");
+            Console.WriteLine($"HP : {currentHp}/{myTotalStatus.hp}");
             Console.WriteLine($"공격력 : {myTotalStatus.attack}");
             Console.WriteLine($"방어력 : {myTotalStatus.defence}");
 
@@ -648,7 +658,7 @@ namespace ConsoleProject_2
 
 
             //아이템 수치만큼 추가
-            for (int i = 0; i < equipment.myItem.Length; i++)
+            for (int i = 0; i < equipment.myItem.Count; i++)
             {
                 hp += equipment.myItem[i].hp;
                 defence += equipment.myItem[i].defence;
@@ -657,6 +667,7 @@ namespace ConsoleProject_2
             }
 
             myTotalStatus.hp = myBaseStatus.hp + hp;
+            currentHp = myTotalStatus.hp;
             myTotalStatus.defence = myBaseStatus.defence + defence;
             myTotalStatus.attack = myBaseStatus.attack + attack;
         }
@@ -714,7 +725,7 @@ namespace ConsoleProject_2
             Console.WriteLine("\n2. 철검 : 800 G");
             Console.WriteLine("\n3. 바람의 검 : 2,000 G");
             Console.WriteLine("\n4. 용사의 검 : 10,000 G");
-            Console.WriteLine("\n5. 체력 포션 : 50 G");
+            Console.WriteLine("\n5. 중급 체력 포션 : 50 G");
             Console.WriteLine("\n현재 자본 : " + inventory.money);
 
 
@@ -766,9 +777,9 @@ namespace ConsoleProject_2
                     case 5:
                         if (inventory.money >= 50)
                         {
-                            inventory.inventoryPotion.Add(new Potion("체력 포션", 50));
+                            inventory.inventoryPotion.Add(new Potion("중급 체력 포션", 100));
                             inventory.money -= 50;
-                            Console.WriteLine("[포션 : 체력 포션]을 구매하였습니다.");
+                            Console.WriteLine("[포션 : 중급 체력 포션]을 구매하였습니다.");
                             Console.WriteLine("현재 자본 : " + inventory.money + "\n");
                         }
                         break;
@@ -814,22 +825,82 @@ namespace ConsoleProject_2
                 }
 
             }
-
-            Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
             while (returnPage)
             {
-                key = Console.ReadKey(true);
-
-                switch (key.Key)
+                Console.WriteLine("0. 캐릭터 정보 화면으로 복귀");
+                Console.WriteLine("1. 장비 장착");
+                Console.WriteLine("2. 포션 장착");
+                Console.WriteLine("원하는 동작을 선택하세요.");
+                switch (Read.ReadInt(0, 2))
                 {
-                    case ConsoleKey.Enter:
+                    case 0:
                         returnPage = false;
+                        break;
+                    case 1:
+                        Console.WriteLine("착용을 원하는 장비 번호를 입력하세요");
+                        EquipItem(Read.ReadUInt(0));
+                        break;
+                    case 2:
+                        Console.WriteLine("착용을 원하는 포션 번호를 입력하세요");
+                        EquipPotion(Read.ReadUInt(0));
                         break;
                 }
             }
+            //Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
+            //while (returnPage)
+            //{
+            //    key = Console.ReadKey(true);
+
+            //    switch (key.Key)
+            //    {
+            //        case ConsoleKey.Enter:
+            //            returnPage = false;
+            //            break;
+            //    }
+            //}
             ShowMyCharacter();
         }
 
+        //아이템을 장착하는 메서드
+        public void EquipItem(int itemNum)
+        {
+            if (equipment.myItem.Count < MaxEquipment)
+            {
+                if (itemNum<inventory.inventoryItem.Count)
+                {
+                    equipment.myItem.Add(inventory.inventoryItem[itemNum]);
+                    inventory.inventoryItem.RemoveAt(itemNum);
+                    Console.WriteLine($"[{equipment.myItem[equipment.myItem.Count - 1].name}]을 장비하였습니다.");
+                    SetTotalStatus();
+                }
+                else
+                {
+                    Console.WriteLine("해당 인벤토리에 장비가 없습니다.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("더 이상 장비를 착용할 수 없습니다.");
+            }
+        }
+        //포션을 장착하는 메서드
+        public void EquipPotion(int itemNum)
+        {
+            if (inventory.inventoryPotion[itemNum] != null)
+            {
+                if (equipment.myPotion == null)
+                {
+                    equipment.myPotion = inventory.inventoryPotion[itemNum];
+                    Console.WriteLine($"[{equipment.myPotion.name}]을 장비하였습니다.");
+                }
+                else
+                {
+                    inventory.inventoryPotion.Add(equipment.myPotion);
+                    equipment.myPotion= inventory.inventoryPotion[itemNum];
+                    inventory.inventoryPotion.RemoveAt(itemNum);
+                }            
+            }
+        }
         //착용중인 장비를 보여주는 메서드
         public void ShowMyEquipment()
         {
@@ -839,10 +910,10 @@ namespace ConsoleProject_2
             bool returnPage = true;
 
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         E q u i p m e n t         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
-            for (int i = 0; i < equipment.myItem.Length; i++)
+            for (int i = 0; i < equipment.myItem.Count; i++)
             {
                 Console.WriteLine($"[{i + 1}]번 장비 ");
-                if (equipment.myItem[i].name == "")
+                if (equipment.myItem[i]== null)
                 {
                     Console.WriteLine($"비어있습니다\n");
                 }
@@ -854,7 +925,7 @@ namespace ConsoleProject_2
 
 
             Console.WriteLine("[포션 주머니]");
-            if (equipment.myPotion.name == "")
+            if (equipment.myPotion== null)
             {
                 Console.WriteLine($"비어있습니다\n");
             }
@@ -864,21 +935,70 @@ namespace ConsoleProject_2
             }
 
 
-            Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
             while (returnPage)
             {
-                key = Console.ReadKey(true);
-
-                switch (key.Key)
+            Console.WriteLine("0. 캐릭터 정보 화면으로 복귀");
+            Console.WriteLine("1. 장비 해제");
+            Console.WriteLine("2. 포션 해제");
+                Console.WriteLine("원하는 동작을 선택하세요.");
+                switch (Read.ReadInt(0,2))
                 {
-                    case ConsoleKey.Enter:
+                    case 0:
                         returnPage = false;
+                        break;
+                    case 1:
+                        Console.WriteLine("착용을 해제를 원하는 장비 번호를 입력하세요");
+                        UnEquipItem(Read.ReadUInt(0));
+                        break;
+                    case 2:
+                        UnEquipPotion();
                         break;
                 }
             }
+
+            //Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
+            //while (returnPage)
+            //{
+            //    key = Console.ReadKey(true);
+
+            //    switch (key.Key)
+            //    {
+            //        case ConsoleKey.Enter:
+            //            returnPage = false;
+            //            break;
+            //    }
+            //}
             ShowMyCharacter();
         }
 
+        //아이템을 장착하는 메서드
+        public void UnEquipItem(int itemNum)
+        {
+            if (itemNum< inventory.inventoryItem.Count)
+            {
+                inventory.inventoryItem.Add(equipment.myItem[itemNum]);
+                Console.WriteLine($"[{equipment.myItem[itemNum].name}]을 장비 해제하였습니다.");
+                equipment.myItem.RemoveAt(itemNum);
+                SetTotalStatus();
+            }
+            else
+            {
+                Console.WriteLine("해당 위치에 장비를 착용하고있지 않습니다.");
+            }
+        }
+        public void UnEquipPotion()
+        {
+            if (equipment.myPotion!=null)
+            {
+                inventory.inventoryPotion.Add(equipment.myPotion);
+                Console.WriteLine($"[{equipment.myPotion.name}]을 장비 해제하였습니다.");
+                equipment.myPotion = null;
+            }
+            else
+            {
+                Console.WriteLine("해당 위치에 포션을 착용하고있지 않습니다.");
+            }
+        }
 
         public void onGame()
         {
