@@ -121,6 +121,7 @@ namespace ConsoleProject_2
 
         public void Move(Direction dir)
         {
+            Map.SetPlayerMap(pos.x,pos.y);
             if (onVillage)
             {
                 Console.SetCursorPosition(pos.x, pos.y);
@@ -164,17 +165,6 @@ namespace ConsoleProject_2
                     break;
             }
 
-            ////이동할 때마다 지워지는 거 방지를 위해
-            //// 렉이 너무 걸려서 하나씩 지우도록 변경
-            //if (onVillage)
-            //{
-            //    Map.DrawVillageMap();
-            //}
-            //else if (onAdventure)
-            //{
-            //    Map.DrawAdventureMap();
-            //}
-
             SetCharacterPos(playerImage);
         }
 
@@ -192,7 +182,6 @@ namespace ConsoleProject_2
             {
                 Move(Direction.right);
             }
-
         }
         public void MoveUp()
         {
@@ -299,6 +288,8 @@ namespace ConsoleProject_2
                         if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]&&watch.ElapsedTicks%5000==0)
                         {
                             Move(Direction.down);
+                            watch.Restart();
+                            //여기다가 몬스터 일정 시간마다 움직이는 코드 넣어도 될 듯?
                         }
                     }
                 }
@@ -353,33 +344,6 @@ namespace ConsoleProject_2
             jump.RunWorkerAsync();
         }
 
-        //이건 백그라운드에서 일정시간마다 아래로 이동하도록 설정하면 될 것 같다.
-        //해당 함수는 사냥터로 들어갈 경우 호출되며 사냥터 탈출 시 
-        //onHuntingArea가 false로 전환되며 반복문도 끝난다
-        public void Gravity()
-        {
-            BackgroundWorker gravity = new BackgroundWorker();
-            gravity.DoWork += (sender, e) =>
-            {
-                while (true)
-                {
-                    if (onAdventure && !onVillage)
-                    {
-                        if (!Map.BaseMap[pos.x, pos.y + playerImage.Length])
-                        {
-                            Move(Direction.down);
-                        }
-                        //해당 주기마다 아래로 내려간다
-                        Thread.Sleep(250);
-                    }
-                }
-            };
-            gravity.RunWorkerCompleted += (sender, e) =>
-            {
-
-            };
-            gravity.RunWorkerAsync();
-        }
 
         public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY)
         {
@@ -396,11 +360,13 @@ namespace ConsoleProject_2
             if (Map.AttackMap[x, y] && Map.MonsterMap[x, y])
             {
                 Console.WriteLine("몬스터 공겨어어어억");
-                Map.MonsterMap[x, y] = false;
+                GameSystem.AttackMonster(x,y);
+                //Map.MonsterMap[x, y] = false;
             }
         }
 
         //이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
+        //이거도 시간 나면 통합 예정
         public static void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
         {
             BackgroundWorker attack = new BackgroundWorker();
@@ -496,9 +462,9 @@ namespace ConsoleProject_2
         static Status InitBaseStatus()
         {
             Status baseStatus;
-            baseStatus.defence = 10;
-            baseStatus.attack = 10;
-            baseStatus.hp = 50;
+            baseStatus.defence = 0;
+            baseStatus.attack = 1;
+            baseStatus.hp = 10;
 
             return baseStatus;
         }
@@ -635,21 +601,14 @@ namespace ConsoleProject_2
                 myBaseStatus.defence = originalDefence;
 
                 Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("HP : ");
-                if (level == 1)
-                {
-                    myBaseStatus.hp += SetMyStatusDetail(1);
-                }
-                else
-                {
+                Console.Write("HP(기본 10) : ");
                     myBaseStatus.hp += SetMyStatusDetail(0);
-                }
                     Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("공격력 : ");
+                Console.Write("공격력(기본 1) : ");
                 myBaseStatus.attack += SetMyStatusDetail(1);
 
                 Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("방어력 : ");
+                Console.Write("방어력(기본 0) : ");
                 myBaseStatus.defence += SetMyStatusDetail(1);
 
                 Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");

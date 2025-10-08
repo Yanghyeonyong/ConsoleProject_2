@@ -22,43 +22,6 @@ namespace ConsoleProject_2
         static void Main(string[] args)
         {
 
-            //GameSetting.WindowSetting(200, 60);
-            //bool gameStart = false;
-            //ConsoleKeyInfo key;
-            ////엔터키 입력시 게임 시작
-            //while (true)
-            //{
-            //    key = Console.ReadKey(true);
-            //    switch (key.Key)
-            //    {
-            //        case ConsoleKey.Enter:
-            //            if (!gameStart)
-            //            {
-            //                Console.Clear();
-            //                gameStart = true;
-            //                Map.DrawAdventureMap();
-            //            }
-            //            else
-            //            {
-            //                Console.Clear();
-            //                gameStart = false;
-            //                Map.SetMap();
-            //            }
-            //            break;
-            //    }
-            //}
-
-
-
-
-
-
-
-
-
-
-
-
             GameSetting.WindowSetting(200, 60);
 
 
@@ -82,12 +45,15 @@ namespace ConsoleProject_2
                 }
             }
 
-            Player player = new Player();
+
+            //Player player = new Player();
 
 
-            player.onGame();
+            //player.onGame();
 
-            Monster monster = new Monster();
+
+
+            GameSystem.OnStart();
 
             bool gamePlay = true;
             while (gamePlay)

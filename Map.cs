@@ -428,7 +428,7 @@ namespace ConsoleProject_2
             //몬스터와 플레이어가 충돌 시
             if (monsterMap[x, y] && playerMap[x, y])
             {
-                monsterMap[x, y] = false;
+                //monsterMap[x, y] = false;
                 //발생할 코드 작성 예정
                 //몬스터가 들이 박은거니 플레이어한테 부정적 영향
                 Console.Write("충돌 발생:Monster");
@@ -619,6 +619,7 @@ namespace ConsoleProject_2
     "%%%%%%@@@%%#**##*#*=.                                                                                                                                                                  .=+**#%##**#%%@@\r\n" +
     "%%%%%%@@@%#%%%##*#+=.                                                                                                                                                                  -=*+*#%##%##%@@@\r\n");
             //DrawBaseMap();
+            GameSystem.GenerateMonster();
         }
     }
 }
