@@ -327,6 +327,19 @@ namespace ConsoleProject_2
                 baseMap[i, 15] = true;
                 baseMap[i, 14] = true;
             }
+
+            GameSystem.GenerateMonster(150, 57);
+            GameSystem.GenerateMonster(120, 57);
+            GameSystem.GenerateMonster(180, 57);
+            GameSystem.GenerateMonster(90, 57);
+            GameSystem.GenerateMonster(60, 57);
+            GameSystem.GenerateMonster(90, 42);
+            GameSystem.GenerateMonster(115, 42);
+            GameSystem.GenerateMonster(140, 42);
+            GameSystem.GenerateMonster(165, 42);
+            GameSystem.GenerateMonster(150, 27);
+            GameSystem.GenerateMonster(160, 27);
+            GameSystem.GenerateMonster(170, 27);
         }
         public static void InitBaseMapStage2()
         {
@@ -364,6 +377,18 @@ namespace ConsoleProject_2
                 baseMap[i, 15] = true;
                 baseMap[i, 14] = true;
             }
+
+
+            GameSystem.GenerateMonster(80, 42);
+            GameSystem.GenerateMonster(100, 42);
+            GameSystem.GenerateMonster(120, 42);
+            GameSystem.GenerateMonster(140, 42);
+            GameSystem.GenerateMonster(10, 27);
+            GameSystem.GenerateMonster(30, 27);
+            GameSystem.GenerateMonster(180, 27);
+            GameSystem.GenerateMonster(170, 27);
+            GameSystem.GenerateMonster(90, 12);
+            GameSystem.GenerateMonster(110, 12);
         }
         public static void InitBaseMapStage3()
         {
@@ -395,6 +420,8 @@ namespace ConsoleProject_2
                 baseMap[i, 15] = true;
                 baseMap[i, 14] = true;
             }
+
+            GameSystem.GenerateBossMonster(100, 29);
         }
 
 
@@ -621,7 +648,7 @@ namespace ConsoleProject_2
     "%%%%%%@@@%%#**##*#*=.                                                                                                                                                                  .=+**#%##**#%%@@\r\n" +
     "%%%%%%@@@%#%%%##*#+=.                                                                                                                                                                  -=*+*#%##%##%@@@\r\n");
             //DrawBaseMap();
-            GameSystem.GenerateMonster();
+            //GameSystem.GenerateMonster();
         }
     }
 }

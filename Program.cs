@@ -21,7 +21,6 @@ namespace ConsoleProject_2
     {
         static void Main(string[] args)
         {
-
             GameSetting.WindowSetting(200, 60);
 
 
@@ -44,13 +43,6 @@ namespace ConsoleProject_2
                     break;
                 }
             }
-
-
-            //Player player = new Player();
-
-
-            //player.onGame();
-
 
 
             GameSystem.OnStart();

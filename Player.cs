@@ -706,7 +706,7 @@ namespace ConsoleProject_2
             onVillage=false;
             onAdventure=true;
             Map.DrawAdventureMap();
-            Map.InitBaseMapStage1();
+            Map.InitBaseMapStage3();
             Map.DrawBaseMap();
             SetCharacterPos(playerImage);
         }

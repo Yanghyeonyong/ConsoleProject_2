@@ -3,16 +3,24 @@
   "WorkspaceRootPath": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|c:\\bootcamp\\vs\\consoleproject_2\\consoleproject_2\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\map.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:map.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\gamesetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:gamesetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\gamesetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:gamesetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|c:\\bootcamp\\vs\\consoleproject_2\\consoleproject_2\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\gamesystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,14 +35,6 @@
       "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\map.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:map.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:monster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\read.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E828E6EE-DEE7-4BA8-B554-A554C0EDF456}|ConsoleProject_2.csproj|solutionrelative:read.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -46,24 +46,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "GameSystem.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\GameSystem.cs",
               "RelativeDocumentMoniker": "GameSystem.cs",
               "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\GameSystem.cs",
               "RelativeToolTip": "GameSystem.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAABQAAAAAAAAAAAAQwCoAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-08T06:33:37.293Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "item.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\item.cs",
               "RelativeDocumentMoniker": "item.cs",
@@ -71,12 +71,11 @@
               "RelativeToolTip": "item.cs",
               "ViewState": "AgIAAC4AAAAAAAAAAAAkwD0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-05T08:01:27.15Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-05T08:01:27.15Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "Inventory.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Inventory.cs",
               "RelativeDocumentMoniker": "Inventory.cs",
@@ -84,8 +83,7 @@
               "RelativeToolTip": "Inventory.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAAAwBkAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-05T08:00:53.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-05T08:00:53.144Z"
             },
             {
               "$type": "Document",
@@ -101,37 +99,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "Monster.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Monster.cs",
               "RelativeDocumentMoniker": "Monster.cs",
               "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Monster.cs",
               "RelativeToolTip": "Monster.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAYwCsAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAowMsAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-01T00:32:53.705Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Map.cs",
-              "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Map.cs",
-              "RelativeDocumentMoniker": "Map.cs",
-              "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Map.cs",
-              "RelativeToolTip": "Map.cs",
-              "ViewState": "AgIAAFoCAAAAAAAAAAAmwG8CAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-30T08:41:14.381Z"
+              "WhenOpened": "2025-10-01T00:32:53.705Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Map.cs",
+              "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Map.cs",
+              "RelativeDocumentMoniker": "Map.cs",
+              "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Map.cs*",
+              "RelativeToolTip": "Map.cs*",
+              "ViewState": "AgIAAIgBAAAAAAAAAAAkwKcBAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T08:41:14.381Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Player.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Player.cs",
               "RelativeDocumentMoniker": "Player.cs",
-              "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Player.cs*",
-              "RelativeToolTip": "Player.cs*",
-              "ViewState": "AgIAAOYBAAAAAAAAAAAcwP0BAAA7AAAAAAAAAA==",
+              "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Player.cs",
+              "RelativeToolTip": "Player.cs",
+              "ViewState": "AgIAAK0CAAAAAAAAAAAmwMQCAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-30T07:48:34.324Z",
               "EditorCaption": ""
@@ -144,20 +144,20 @@
               "RelativeDocumentMoniker": "GameSetting.cs",
               "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\GameSetting.cs",
               "RelativeToolTip": "GameSetting.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAQwBkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAkwBsAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-30T07:29:59.367Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\BootCamp\\VS\\ConsoleProject_2\\ConsoleProject_2\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAA8wDYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAgwDQAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-30T07:04:06.056Z",
               "EditorCaption": ""

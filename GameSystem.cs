@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,20 @@ namespace ConsoleProject_2
         static public void GenerateMonster()
         {
             Monster monster = new Monster();    
+            //딕셔너리에 저장한 다음에 이후 검색
+            monsterPos.Add(monster.pos.x * 200 + monster.pos.y * 60, monster);
+        }
+        static public void GenerateMonster(int x, int y)
+        {
+            Monster monster = new Monster(x, y);    
+            //딕셔너리에 저장한 다음에 이후 검색
+            monsterPos.Add(monster.pos.x * 200 + monster.pos.y * 60, monster);
+        }
+        static public void GenerateBossMonster(int x, int y)
+        {
+            Monster monster = new Monster(x, y);  
+            monster.BossMonster(x, y);
+            
             //딕셔너리에 저장한 다음에 이후 검색
             monsterPos.Add(monster.pos.x * 200 + monster.pos.y * 60, monster);
         }
