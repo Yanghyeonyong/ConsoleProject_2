@@ -20,7 +20,7 @@ namespace ConsoleProject_2
 
         public MyPos pos;
 
-        static string[] playerImage;
+        public string[] playerImage;
         static string[] eraserplayerImage;
 
         public Status status;

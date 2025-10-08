@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -107,8 +108,19 @@ namespace ConsoleProject_2
             ConsoleKeyInfo key;
             control.DoWork += (sender, e) =>
             {
-                Stopwatch watch= new Stopwatch();
-                watch.Start();
+                Stopwatch gravity= new Stopwatch();
+                Stopwatch attackDelay= new Stopwatch();
+
+                gravity.Start();
+                attackDelay.Start();
+
+                List<int> attackPosX;
+                List<int> attackPosY;
+                int attackX;
+                int attackY;
+                attackPosX = new List<int>();
+                attackPosY = new List<int>();
+                bool onAttack=false;
                 while (true)
                 {
                     if (Console.KeyAvailable)
@@ -151,14 +163,25 @@ namespace ConsoleProject_2
                                     MoveRight();
                                     break;
                                 case ConsoleKey.A:
-                                    if (onFront)
+                                    if (attackDelay.ElapsedMilliseconds >= 1500)
                                     {
-                                        Attack(3, 0, 0, 0);
+                                        if (!onAttack)
+                                        {
+                                            onAttack = true;
+                                        }
+
+                                        if (onFront)
+                                        {
+                                            Attack(3, 0, 0, 0, attackPosX, attackPosY);
+
+                                        }
+                                        else
+                                        {
+                                            Attack(0, 3, 0, 0, attackPosX, attackPosY);
+                                        }
+                                        attackDelay.Restart();
                                     }
-                                    else
-                                    {
-                                        Attack(0, 3, 0, 0);
-                                    }
+                                    
                                     break;
                                 case ConsoleKey.S:
                                     currentHp += equipment.myPotion.healingHp;
@@ -177,7 +200,7 @@ namespace ConsoleProject_2
                                     if (Map.adventurePortal[pos.x, pos.y])
                                     {
                                         OnAdventure();
-                                        Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
+                                        //Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
                                     }
                                     if (Map.homePortal[pos.x, pos.y])
                                     {
@@ -195,12 +218,32 @@ namespace ConsoleProject_2
                     }
                     if (onAdventure && !onVillage)
                     {
-                        if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]&&watch.ElapsedTicks%5000==0)
+                        if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]&&gravity.ElapsedTicks%5000==0)
                         {
                             Move(Direction.down);
-                            watch.Restart();
+                            gravity.Restart();
                             //여기다가 몬스터 일정 시간마다 움직이는 코드 넣어도 될 듯?
                         }
+                    }
+
+                    if (attackDelay.ElapsedMilliseconds == 1000&&onAttack)
+                    {
+                        //Console.WriteLine("지우개 시작ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
+                        for (int i = 0; i < attackPosX.Count; i++)
+                        {
+                            attackX = attackPosX[i];
+                            attackY = attackPosY[i];
+                            Console.SetCursorPosition(attackX,attackY);
+                            Map.AttackMap[attackX, attackY] =false;
+                            Console.Write(Map.adventureMap[attackX,attackY]);
+                        }
+
+                        Console.SetCursorPosition(pos.x, pos.y);
+                        Console.Write(playerImage[0]);
+                        Console.SetCursorPosition(pos.x, pos.y + 1);
+                        Console.Write(playerImage[1]);
+                        attackPosX.RemoveRange(0, attackPosX.Count-1);
+                        attackPosY.RemoveRange(0, attackPosY.Count-1);
                     }
                 }
             };
@@ -300,117 +343,272 @@ namespace ConsoleProject_2
             }
 
         }
-        public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY)
+        public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, List<int> attackX, List<int> attackY)
         {
-            //Map.SetAttackMap(pos,forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
-            SetAttackMap(pos, forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
-        }
-        public static void SetAttack(int x, int y, List<int> attackRangeX, List<int> attackRangeY)
-        {
-            Map.AttackMap[x, y] = true;
-            attackRangeX.Add(x);
-            attackRangeY.Add(y);
-            Console.SetCursorPosition(x, y);
-            Console.Write("c");
-            if (Map.AttackMap[x, y] && Map.MonsterMap[x, y])
+            int forward = 0;
+            bool check = false;
+            //전방 공격
+            for (int i = 1; i <= forwardRangeX; i++)
             {
-                Console.WriteLine("몬스터 공겨어어어억");
-                GameSystem.AttackMonster(x,y);
-                //Map.MonsterMap[x, y] = false;
+                forward = pos.x + playerImage[1].Length + i;
+                if (forward >= 198)
+                {
+                    break;
+                }
+
+                for (int j = 0; j < playerImage.Length; j++)
+                {
+                    Map.AttackMap[forward, pos.y + j] = true;
+                    if ((Map.AttackMap[forward, pos.y + j] && Map.MonsterMap[forward, pos.y + j]))
+                    {
+                        GameSystem.AttackMonster(forward, pos.y + j);
+                        check=true;
+                        break;
+                    }
+                    Console.SetCursorPosition(forward, pos.y + j);
+                    Console.Write("c");
+                    attackX.Add(forward);
+                    attackY.Add(pos.y + j);
+
+                }
+                if (check)
+                {
+                    break;
+                }    
             }
+
+            check = false;
+
+            int rear = 0;
+            //후방 공격
+            for (int i = 1; i <= rearRangeX; i++)
+            {
+                rear = pos.x - i;
+                if (rear <= 2)
+                {
+                    break;
+                }
+
+                for (int j = 0; j < playerImage.Length; j++)
+                {
+                    Map.AttackMap[rear, pos.y + j] = true;
+
+                    if ((Map.AttackMap[rear, pos.y + j] && Map.MonsterMap[rear, pos.y + j]))
+                    {
+                        GameSystem.AttackMonster(rear, pos.y + j);
+                        check = true;
+                        break;
+                    }
+                    Console.SetCursorPosition(rear, pos.y + j);
+                    Console.Write("c");
+
+                    attackX.Add(rear);
+                    attackY.Add(pos.y + j);
+                }
+                if (check)
+                {
+                    break;
+                }
+            }
+
+            //일단 지금 단계에서는 전방, 후방 공격으로 충분하다
+            #region 상단 하단
+            //int top = 0;
+            ////상단 공격
+            //for (int i = 1; i < topRangeY; i++)
+            //{
+            //    top = pos.y - i;
+            //    if (top <= 1)
+            //    {
+            //        break;
+            //    }
+            //    for (int j = 0; j < playerImage[1].Length; j++)
+            //    {
+            //        //Map.AttackMap[pos.x + j, top] = true;
+            //        Console.SetCursorPosition(pos.x + j, top);
+            //        Console.Write("c");
+
+            //        if ((Map.AttackMap[pos.x + j, top] && Map.MonsterMap[pos.x + j, top]))
+            //        {
+            //            GameSystem.AttackMonster(rear, pos.y + j);
+            //            check = true;
+            //            break;
+            //        }
+            //    }
+            //    if (check)
+            //    {
+            //        break;
+            //    }
+            //}
+
+            //    int bottom = 0;
+            //for (int i = 0; i < bottomRangeY; i++)
+            //{
+            //    bottom = pos.y + playerImage.Length + i;
+            //    if (top <= 1)
+            //    {
+            //        break;
+            //    }
+            //    for (int j = 0; j < playerImage[1].Length; j++)
+            //    {
+            //        Map.AttackMap[pos.x + j, bottom] = true;
+            //        Console.SetCursorPosition(pos.x + j, bottom);
+            //        Console.Write("c");
+
+            //        if ((Map.AttackMap[pos.x + j, bottom] && Map.MonsterMap[pos.x + j, bottom]))
+            //        {
+            //            GameSystem.AttackMonster(rear, pos.y + j);
+            //            check = true;
+            //            break;
+            //        }
+            //    }
+            //    if (check)
+            //    {
+            //        break;
+            //    }
+            //}
+            #endregion
+
         }
 
-        //이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
-        //이거도 시간 나면 통합 예정
-        public static void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
-        {
-            BackgroundWorker attack = new BackgroundWorker();
-            attack.DoWork += (sender, e) =>
-            {
-                int attackX;
-                int attackY;
-                List<int> attackRangeX = new List<int>();
-                List<int> attackRangeY = new List<int>();
-                for (int i = 1; i <= forwardRangeX; i++)
-                {
-                    //pos.x + playerImage[1].Length
-                    attackX = pos.x + playerImage[1].Length + i;
-                    attackY = pos.y;
-                    if (attackX < 200)
-                    {
-                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-                        SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                for (int i = 1; i <= rearRangeX; i++)
-                {
-                    attackX = pos.x - i;
-                    attackY = pos.y;
-                    if (attackX >= 0)
-                    {
-                        SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-                        SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                for (int i = 1; i <= topRangeY; i++)
-                {
-                    attackX = pos.x;
-                    attackY = pos.y - i;
-                    if (attackY >= 0)
-                    {
-                        for (int j = 0; j < playerImage[1].Length + 1; j++)
-                        {
-                            SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                for (int i = 1; i <= bottomRangeY; i++)
-                {
-                    attackX = pos.x;
-                    attackY = pos.y + i + playerImage.Length - 1;
-                    if (attackY <= 60)
-                    {
+   
+        //public void SetAttackMap(int x, int y)
+        //{
+        //    BackgroundWorker attack = new BackgroundWorker();
+        //    attack.DoWork += (sender, e) =>
+        //    {
+        //        Map.AttackMap[x,y] = true;
+        //        Console.SetCursorPosition(x,y);
+        //        Console.Write("c");
+        //        Thread.Sleep(500);
+        //        Map.AttackMap[x, y] = false;
+        //        Console.SetCursorPosition(x, y);
+        //        if (onAdventure)
+        //        {
+        //            Console.Write(Map.adventureMap[x, y]);
+        //        }
 
-                        for (int j = 0; j < playerImage[1].Length + 1; j++)
-                        {
-                            SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+        //    };
+        //    attack.RunWorkerCompleted += (sender, e) =>
+        //    {
+        //        attack = null;
+        //    };
+        //    attack.RunWorkerAsync();
+        //}
 
-                Thread.Sleep(duration * 1000);
 
-                for (int i = 0; i < attackRangeX.Count; i++)
-                {
-                    Console.SetCursorPosition(attackRangeX[i], attackRangeY[i]);
-                    Console.Write(" ");
-                    Map.AttackMap[attackRangeX[i], attackRangeY[i]] = false;
-                }
-                attackRangeX = null;
-                attackRangeY = null;
-            };
-            attack.RunWorkerCompleted += (sender, e) =>
-            {
-                attack = null;
-            };
-            attack.RunWorkerAsync();
-        }
+
+        //public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY)
+        //{
+
+
+        //    SetAttackMap(pos, forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
+        //}
+        //public void SetAttack(int x, int y, List<int> attackRangeX, List<int> attackRangeY)
+        //{
+        //    Map.AttackMap[x, y] = true;
+        //    attackRangeX.Add(x);
+        //    attackRangeY.Add(y);
+        //    Console.SetCursorPosition(x, y);
+        //    Console.Write("c");
+        //    if (Map.AttackMap[x, y] && Map.MonsterMap[x, y])
+        //    {
+        //        Console.WriteLine("몬스터 공겨어어어억");
+        //        GameSystem.AttackMonster(x,y);
+        //        //Map.MonsterMap[x, y] = false;
+        //    }
+        //}
+
+        ////이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
+        ////이거도 시간 나면 통합 예정
+        //public void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
+        //{
+        //    BackgroundWorker attack = new BackgroundWorker();
+        //    attack.DoWork += (sender, e) =>
+        //    {
+        //        int attackX;
+        //        int attackY;
+        //        List<int> attackRangeX = new List<int>();
+        //        List<int> attackRangeY = new List<int>();
+        //        for (int i = 1; i <= forwardRangeX; i++)
+        //        {
+        //            attackX = pos.x + playerImage[1].Length + i;
+        //            attackY = pos.y;
+        //            if (attackX < 200)
+        //            {
+        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+        //                SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        for (int i = 1; i <= rearRangeX; i++)
+        //        {
+        //            attackX = pos.x - i;
+        //            attackY = pos.y;
+        //            if (attackX >= 0)
+        //            {
+        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
+        //                SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        for (int i = 1; i <= topRangeY; i++)
+        //        {
+        //            attackX = pos.x;
+        //            attackY = pos.y - i;
+        //            if (attackY >= 0)
+        //            {
+        //                for (int j = 0; j < playerImage[1].Length + 1; j++)
+        //                {
+        //                    SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        for (int i = 1; i <= bottomRangeY; i++)
+        //        {
+        //            attackX = pos.x;
+        //            attackY = pos.y + i + playerImage.Length - 1;
+        //            if (attackY <= 60)
+        //            {
+
+        //                for (int j = 0; j < playerImage[1].Length + 1; j++)
+        //                {
+        //                    SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                break;
+        //            }
+        //        }
+
+        //        Thread.Sleep(duration * 1000);
+
+        //        for (int i = 0; i < attackRangeX.Count; i++)
+        //        {
+        //            Console.SetCursorPosition(attackRangeX[i], attackRangeY[i]);
+        //            Console.Write(" ");
+        //            Map.AttackMap[attackRangeX[i], attackRangeY[i]] = false;
+        //        }
+        //        attackRangeX = null;
+        //        attackRangeY = null;
+        //    };
+        //    attack.RunWorkerCompleted += (sender, e) =>
+        //    {
+        //        attack = null;
+        //    };
+        //    attack.RunWorkerAsync();
+        //}
         #endregion
 
         #region 캐릭터 초기 설정
@@ -706,7 +904,7 @@ namespace ConsoleProject_2
             onVillage=false;
             onAdventure=true;
             Map.DrawAdventureMap();
-            Map.InitBaseMapStage3();
+            Map.InitBaseMapStage1();
             Map.DrawBaseMap();
             SetCharacterPos(playerImage);
         }
