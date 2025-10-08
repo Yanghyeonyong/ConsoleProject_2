@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -219,6 +220,8 @@ namespace ConsoleProject_2
             ConsoleKeyInfo key;
             control.DoWork += (sender, e) =>
             {
+                Stopwatch watch= new Stopwatch();
+                watch.Start();
                 while (true)
                 {
                     if (Console.KeyAvailable)
@@ -236,6 +239,14 @@ namespace ConsoleProject_2
                                     else if (onAdventure && !onVillage)
                                     {
                                         //Console.WriteLine("점프!!");
+                                        MoveUp();
+                                        MoveUp();
+                                        MoveUp();
+                                        MoveUp();
+                                        MoveUp();
+                                        MoveUp();
+                                        MoveUp();
+                                        MoveUp();
                                         MoveUp();
                                         MoveUp();
                                         //Console.WriteLine("점프 성공");
@@ -281,6 +292,13 @@ namespace ConsoleProject_2
                                     }
                                     break;
                             }
+                        }
+                    }
+                    if (onAdventure && !onVillage)
+                    {
+                        if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]&&watch.ElapsedTicks%5000==0)
+                        {
+                            Move(Direction.down);
                         }
                     }
                 }
