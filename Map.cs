@@ -246,6 +246,7 @@ namespace ConsoleProject_2
         }
 
         public static bool[,] homePortal;
+        public static bool[,] villagePortal;
         public static bool[,] adventurePortal;
         public static bool[,] shopPortal;
 
@@ -262,6 +263,7 @@ namespace ConsoleProject_2
             attackMap = new bool[width, height];
 
             homePortal = new bool[width, height];
+            villagePortal = new bool[width, height];
             adventurePortal = new bool[width, height];
             shopPortal = new bool[width, height];
 

@@ -25,8 +25,6 @@ namespace ConsoleProject_2
         //public int mp;
         public int defence;
         public int attack;
-        //public int criticalRate;
-        //public int criticalDamage;
     }
 
     //플레이어가 착용한 아이템
@@ -77,7 +75,7 @@ namespace ConsoleProject_2
         //경험치 및 레벨
         int level;
         int maxExp;
-        int currentExp;
+        public int currentExp;
         int statPoint;
         public Player(bool test)
         {
@@ -94,115 +92,12 @@ namespace ConsoleProject_2
             eraserplayerImage[1] = "        ";
             pos.x = 100;
             pos.y = 30;
-            //SetCharacterPos(playerImage);
-
-            ////일단 테스트용이라 현재는 true로 둔거고
-            ////나중엔 사냥터 갔을 때만 true로 바꿀 예정
-            //onAdventure = true;
-            ////이거도 테스트용이라 지금 여기서 실행하는 거임
-            //Gravity();
-
-            ////일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
-            //onJump = true;
-
-            ////이거도 테스트용
-            //Jump();
-
-        }
-
-        public void SetCharacterPos(string[] s)
-        {
-            Map.SetPlayerMap(pos.x, pos.y);
-            Console.SetCursorPosition(pos.x, pos.y);
-            Console.Write(s[0]);
-            Console.SetCursorPosition(pos.x, pos.y + 1);
-            Console.Write(s[1]);
-        }
-
-        public void Move(Direction dir)
-        {
-            Map.SetPlayerMap(pos.x,pos.y);
-            if (onVillage)
-            {
-                Console.SetCursorPosition(pos.x, pos.y);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.villageMap[pos.x + i, pos.y]);
-                }
-                Console.SetCursorPosition(pos.x, pos.y+1);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.villageMap[pos.x + i, pos.y+1]);
-                }
-            }
-            else if (onAdventure)
-            {
-                Console.SetCursorPosition(pos.x, pos.y);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.adventureMap[pos.x + i, pos.y]);
-                }
-                Console.SetCursorPosition(pos.x, pos.y+1);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.adventureMap[pos.x + i, pos.y+1]);
-                }
-            }
-
-            switch (dir)
-            {
-                case Direction.left:
-                    pos.x--;
-                    break;
-                case Direction.right:
-                    pos.x++;
-                    break;
-                case Direction.up:
-                    pos.y--;
-                    break;
-                case Direction.down:
-                    pos.y++;
-                    break;
-            }
-
-            SetCharacterPos(playerImage);
-        }
-
-        public void MoveLeft()
-        {
-            //특수문자라 -2다 일반이면 -1로 바꿔야 한다
-            if (!Map.BaseMap[pos.x - 2, pos.y])
-            {
-                Move(Direction.left);
-            }
-        }
-        public void MoveRight()
-        {
-            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y])
-            {
-                Move(Direction.right);
-            }
-        }
-        public void MoveUp()
-        {
-            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
-            {
-                Move(Direction.up);
-            }
-
-        }
-        public void MoveDown()
-        {
-            //왜 이런 값이 나올까 생각해봤는제 pos는 플레이어의 좌측 상단 좌표
-            // pos.y+playerImage+1이 아닌 이유는 애초에 내가 아랫줄 맵은 baseMap.GetLength(1)-1d으로 받아놔서 그런거 같음
-            if (!Map.BaseMap[pos.x, pos.y + playerImage.Length])
-            {
-                Move(Direction.down);
-            }
 
         }
 
 
+
+        #region 조작
         public void ControlPlayer()
         {
             BackgroundWorker control = new BackgroundWorker();
@@ -272,12 +167,17 @@ namespace ConsoleProject_2
                                     if (Map.adventurePortal[pos.x, pos.y])
                                     {
                                         OnAdventure();
+                                        Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
                                     }
                                     if (Map.homePortal[pos.x, pos.y])
                                     {
                                         onVillage = false;
                                         onAdventure = false;
                                         ShowMyCharacter();
+                                    }
+                                    if (Map.villagePortal[pos.x, pos.y])
+                                    {
+                                        OnVillage();
                                     }
                                     break;
                             }
@@ -300,51 +200,96 @@ namespace ConsoleProject_2
             };
             control.RunWorkerAsync();
         }
-
-
-        //전방 점프같은 경우 어떻게 구현하지
-        //백그라운드로 구현
-        //현재 점프를 반복할경우 일정 확률로 캐릭터의 이미지가 지워지지 않고 남아있는 것을 확인
-        //반복문 처리 속도가 너무 빨라서 그럴 수도 있다고 생각함
-        public void Jump()
+        public void SetCharacterPos(string[] s)
         {
-            BackgroundWorker jump = new BackgroundWorker();
-            ConsoleKeyInfo key;
-            jump.DoWork += (sender, e) =>
-            {
-                while (onAdventure)
-                {
-
-                    //발 밑에 벽이 있을 경우 점프 가능
-                    if (Map.BaseMap[pos.x, pos.y + playerImage.Length])
-                    {
-                        //Console.WriteLine("점프 가능");
-                        onJump = false;
-                    }
-                    if (!onJump)
-                    {
-                        key = Console.ReadKey(true);
-                        switch (key.Key)
-                        {
-                            case ConsoleKey.UpArrow:
-                                //Console.WriteLine("점프!!");
-                                MoveUp();
-                                MoveUp();
-                                //Console.WriteLine("점프 성공");
-                                break;
-                        }
-                        onJump = true;
-                    }
-                }
-            };
-            jump.RunWorkerCompleted += (sender, e) =>
-            {
-                jump = null;
-            };
-            jump.RunWorkerAsync();
+            Map.SetPlayerMap(pos.x, pos.y);
+            Console.SetCursorPosition(pos.x, pos.y);
+            Console.Write(s[0]);
+            Console.SetCursorPosition(pos.x, pos.y + 1);
+            Console.Write(s[1]);
         }
 
+        public void Move(Direction dir)
+        {
+            Map.SetPlayerMap(pos.x,pos.y);
+            if (onVillage)
+            {
+                Console.SetCursorPosition(pos.x, pos.y);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.villageMap[pos.x + i, pos.y]);
+                }
+                Console.SetCursorPosition(pos.x, pos.y+1);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.villageMap[pos.x + i, pos.y+1]);
+                }
+            }
+            else if (onAdventure)
+            {
+                Console.SetCursorPosition(pos.x, pos.y);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.adventureMap[pos.x + i, pos.y]);
+                }
+                Console.SetCursorPosition(pos.x, pos.y+1);
+                for (int i = 0; i < 8; i++)
+                {
+                    Console.Write(Map.adventureMap[pos.x + i, pos.y+1]);
+                }
+            }
 
+            switch (dir)
+            {
+                case Direction.left:
+                    pos.x--;
+                    break;
+                case Direction.right:
+                    pos.x++;
+                    break;
+                case Direction.up:
+                    pos.y--;
+                    break;
+                case Direction.down:
+                    pos.y++;
+                    break;
+            }
+
+            SetCharacterPos(playerImage);
+        }
+        public void MoveLeft()
+        {
+            //특수문자라 -2다 일반이면 -1로 바꿔야 한다
+            if (!Map.BaseMap[pos.x - 2, pos.y])
+            {
+                Move(Direction.left);
+            }
+        }
+        public void MoveRight()
+        {
+            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y])
+            {
+                Move(Direction.right);
+            }
+        }
+        public void MoveUp()
+        {
+            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
+            {
+                Move(Direction.up);
+            }
+
+        }
+        public void MoveDown()
+        {
+            //왜 이런 값이 나올까 생각해봤는제 pos는 플레이어의 좌측 상단 좌표
+            // pos.y+playerImage+1이 아닌 이유는 애초에 내가 아랫줄 맵은 baseMap.GetLength(1)-1d으로 받아놔서 그런거 같음
+            if (!Map.BaseMap[pos.x, pos.y + playerImage.Length])
+            {
+                Move(Direction.down);
+            }
+
+        }
         public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY)
         {
             //Map.SetAttackMap(pos,forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
@@ -456,7 +401,7 @@ namespace ConsoleProject_2
             };
             attack.RunWorkerAsync();
         }
-
+        #endregion
 
         #region 캐릭터 초기 설정
         static Status InitBaseStatus()
@@ -481,33 +426,7 @@ namespace ConsoleProject_2
             inventory = new Inventory();
 
             InitBaseEquipment();
-        }
-        #endregion
-
-        //캐릭터 Total 스테이터스(초기 스탯+장비 스탯_
-        public void SetTotalStatus()
-        {
-            //향후 해당 값들에 아이템 스탯 추가 예정
-            int hp = 0;
-            int defence = 0;
-            int attack = 0;
-
-
-
-            //아이템 수치만큼 추가
-            for (int i = 0; i < equipment.myItem.Length; i++)
-            {
-                hp += equipment.myItem[i].hp;
-                defence += equipment.myItem[i].defence;
-                attack += equipment.myItem[i].attack;
-
-            }
-
-            myTotalStatus.hp = myBaseStatus.hp + hp;
-            myTotalStatus.defence = myBaseStatus.defence + defence;
-            myTotalStatus.attack = myBaseStatus.attack + attack;
-        }
-
+        } 
 
         //캐릭터 이름 설정
         public void SetMyName()
@@ -549,33 +468,6 @@ namespace ConsoleProject_2
             Name = name;
             Console.Clear();
         }
-
-
-        //캐릭터 스탯 설정
-        public int SetMyStatusDetail(int minStatPoint)
-        {
-            int usingStatPoint = 0;
-            while (true)
-            {
-                usingStatPoint = Read.ReadUInt(0);
-                if (usingStatPoint > statPoint)
-                {
-                    Console.WriteLine("잔여스탯을 넘어섰습니다. 다시 입력해주세요");
-                    Console.Write("▶ ");
-                    continue;
-                }
-                if (minStatPoint > usingStatPoint)
-                {
-                    Console.WriteLine($"최소 {minStatPoint} point가 필요합니다.");
-                    Console.Write("▶ ");
-                    continue;
-                }
-                break;
-            }
-            statPoint -= usingStatPoint;
-            return usingStatPoint;
-        }
-
         //초기 시작시 혹은 레벨업 시(레벨업 시는 마을에서) 스테이터스 설정
         public void SetMyStatusOnStart()
         {
@@ -636,15 +528,59 @@ namespace ConsoleProject_2
             SetTotalStatus();
             Console.WriteLine();
         }
-
-
+        public void InitBaseEquipment()
+        {
+            equipment.myItem = new PlayerItem[5];
+            for (int i = 0; i < equipment.myItem.Length; i++)
+            {
+                equipment.myItem[i] = new PlayerItem();
+            }
+            equipment.myPotion = new Potion();
+        }
         public void SetMyCharacterOnStart()
         {
             SetMyName();
             SetMyStatusOnStart();
         }
 
+        #endregion
 
+        #region 캐릭터 설정
+        public void ShowMyCharacter()
+        {
+            Console.Clear();
+            int myInt;
+            Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     캐 릭 터           정 보      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine("무엇을 확인하시겠습니까?");
+            Console.WriteLine("0. 내 캐릭터의 스테이터스");
+            Console.WriteLine("1. 내 캐릭터의 장비");
+            Console.WriteLine("2. 인벤토리");
+            Console.WriteLine("3. 레벨업");
+            Console.WriteLine("그 이외의 숫자 입력시 마을로 복귀합니다.");
+            Console.WriteLine("\n원하는 번호를 입력하세요\n");
+            Console.Write("▶ ");
+            myInt = Read.ReadUInt(0);
+            if (myInt > 3)
+            {
+                OnVillage();
+            }
+            else if (myInt == 0)
+            {
+                ShowMyCharacterInformation();
+            }
+            else if (myInt == 1)
+            {
+                ShowMyEquipment();
+            }
+            else if (myInt == 2)
+            {
+                ShowMyInventory();
+            }
+            else if (myInt == 3)
+            {
+                LevelUp();
+            }
+        }
         public void ShowMyCharacterInformation()
         {
             Console.Clear();
@@ -676,48 +612,56 @@ namespace ConsoleProject_2
             }
             ShowMyCharacter();
         }
-
-        public void InitBaseEquipment()
+        //캐릭터 스탯 설정
+        public int SetMyStatusDetail(int minStatPoint)
         {
-            equipment.myItem = new PlayerItem[5];
+            int usingStatPoint = 0;
+            while (true)
+            {
+                usingStatPoint = Read.ReadUInt(0);
+                if (usingStatPoint > statPoint)
+                {
+                    Console.WriteLine("잔여스탯을 넘어섰습니다. 다시 입력해주세요");
+                    Console.Write("▶ ");
+                    continue;
+                }
+                if (minStatPoint > usingStatPoint)
+                {
+                    Console.WriteLine($"최소 {minStatPoint} point가 필요합니다.");
+                    Console.Write("▶ ");
+                    continue;
+                }
+                break;
+            }
+            statPoint -= usingStatPoint;
+            return usingStatPoint;
+        }
+
+        //캐릭터 Total 스테이터스(초기 스탯+장비 스탯_
+        public void SetTotalStatus()
+        {
+            //향후 해당 값들에 아이템 스탯 추가 예정
+            int hp = 0;
+            int defence = 0;
+            int attack = 0;
+
+
+
+            //아이템 수치만큼 추가
             for (int i = 0; i < equipment.myItem.Length; i++)
             {
-                equipment.myItem[i] = new PlayerItem();
-            }
-            equipment.myPotion = new Potion();
-        }
+                hp += equipment.myItem[i].hp;
+                defence += equipment.myItem[i].defence;
+                attack += equipment.myItem[i].attack;
 
-        public void ShowMyCharacter()
-        {
-            Console.Clear();
-            int myInt;
-            Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     캐 릭 터           정 보      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
-            Console.WriteLine("무엇을 확인하시겠습니까?");
-            Console.WriteLine("0. 내 캐릭터의 스테이터스");
-            Console.WriteLine("1. 내 캐릭터의 장비");
-            Console.WriteLine("2. 인벤토리");
-            Console.WriteLine("그 이외의 숫자 입력시 마을로 복귀합니다.");
-            Console.WriteLine("\n원하는 번호를 입력하세요\n");
-            Console.Write("▶ ");
-            myInt = Read.ReadUInt(0);
-            if (myInt > 2)
-            {
-                OnVillage();
             }
-            else if (myInt == 0)
-            {
-                ShowMyCharacterInformation();
-            }
-            else if (myInt == 1)
-            {
-                ShowMyEquipment();
-            }
-            else if (myInt == 2)
-            {
-                ShowMyInventory();
-            }
-        }
 
+            myTotalStatus.hp = myBaseStatus.hp + hp;
+            myTotalStatus.defence = myBaseStatus.defence + defence;
+            myTotalStatus.attack = myBaseStatus.attack + attack;
+        }
+        #endregion
+        
         //마을로 이동하는 메서드
         public void OnVillage()
         {
@@ -727,6 +671,9 @@ namespace ConsoleProject_2
             Map.MakePortal(0, 65, 25, 31, Map.adventurePortal);
             Map.MakePortal(147, 182, 28, 34, Map.shopPortal);
             Map.MakePortal(81, 116, 52, 58, Map.homePortal);
+            Map.MakePortal(0, 20, 49, 59,Map.villagePortal);
+
+            GameSystem.NewMapMonster();
 
             //Console.Clear();
             Map.DrawVillageMap();
@@ -740,9 +687,17 @@ namespace ConsoleProject_2
 
             //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
             onJump = true;
+        }
 
-            //이거도 테스트용
-            Jump();
+        //모험으로 이동
+        public void OnAdventure()
+        {
+            onVillage=false;
+            onAdventure=true;
+            Map.DrawAdventureMap();
+            Map.InitBaseMapStage1();
+            Map.DrawBaseMap();
+            SetCharacterPos(playerImage);
         }
 
         //상점으로 이동
@@ -823,16 +778,6 @@ namespace ConsoleProject_2
             OnVillage();
         }
 
-        //모험으로 이동
-        public void OnAdventure()
-        {
-            onVillage=false;
-            onAdventure=true;
-            Map.DrawAdventureMap();
-            Map.InitBaseMapStage1();
-            Map.DrawBaseMap();
-            SetCharacterPos(playerImage);
-        }
 
         //인벤토리 내용물을 보여주는 메서드
         public void ShowMyInventory()
@@ -949,17 +894,9 @@ namespace ConsoleProject_2
 
             Console.Clear();
 
-            //처음에 캐릭터 정보를 보여주는 것이 아닌 마을로 이동
-            //ShowMyCharacter();
             ControlPlayer();
-            //ControlAttack();
             onFront = true;
-
-            //TeleportPlayer();
             OnVillage();
-            //Gravity();
-
-
         }
         public void SetMaxExp()
         {
@@ -967,6 +904,8 @@ namespace ConsoleProject_2
         }
         public void LevelUp()
         {
+            bool returnPage=true;
+            ConsoleKeyInfo key;
             int levelUpCount = 0;
             if (currentExp >= maxExp)
             {
@@ -987,6 +926,19 @@ namespace ConsoleProject_2
                 Console.WriteLine("경험치가 부족합니다.");
                 Console.WriteLine($"{currentExp}/{maxExp}");
             }
+
+            while (returnPage)
+            {
+                key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        returnPage = false;
+                        break;
+                }
+            }
+            ShowMyCharacter();
         }
     }
 }

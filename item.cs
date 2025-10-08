@@ -59,40 +59,21 @@ namespace ConsoleProject_2
         public string name;
         //hp 회복량
         public int healingHp;
-        ////mp 회복량
-        //public int healingMp;
-        ////공격력 증가
-        //public int plustDamage;
-        ////쿨타임 감소
-        //public int reduceCoolDown;
-        ////크리티컬확률 증가
-        //public int plusCriticalRate;
-        ////크리티컬 데미지 증가
-        //public int plusCriticalDamage;
-        //포션 지속시간
-        public int duration;
+
 
         public Potion()
         {
             name = "";
-            //duration = 0;
-            //plustDamage = 0;
-            //healingMp = 0;
+
             healingHp = 0;
-            //plusCriticalDamage = 0;
-            //plusCriticalRate = 0;
-            //reduceCoolDown = 0;
+
         }
         public Potion(string potionName, int potionHealingHp)
         {
             name = potionName;
-            //duration = 0;
-            //plustDamage = 0;
-            //healingMp = 0;
+
             healingHp = potionHealingHp;
-            //plusCriticalDamage = 0;
-            //plusCriticalRate = 0;
-            //reduceCoolDown = 0;
+
         }
     }
 }

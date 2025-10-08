@@ -9,7 +9,7 @@ namespace ConsoleProject_2
     static class GameSystem
     {
         static Player player;
-        static Dictionary<int, Monster> monsterPos;
+        public static Dictionary<int, Monster> monsterPos;
 
 
 
@@ -19,7 +19,11 @@ namespace ConsoleProject_2
             monsterPos = new Dictionary<int, Monster>();
             player.onGame();
         }
-
+        static public void NewMapMonster()
+        {
+            monsterPos = null;
+            monsterPos = new Dictionary<int, Monster>();
+        }
         static public void GenerateMonster()
         {
             Monster monster = new Monster();    
@@ -40,6 +44,7 @@ namespace ConsoleProject_2
             if (monsterPos[x * 200 + y * 60].status.hp <= 0)
             {
                 Console.WriteLine("몬스터 사망");
+                player.currentExp += monsterPos[x * 200 + y * 60].exp;
                 monsterPos[x * 200 + y * 60].Die();
                 monsterPos[x * 200 + y * 60] = null;
                 Map.MonsterMap[x, y] = false;

@@ -26,6 +26,7 @@ namespace ConsoleProject_2
         public Status status;
         EnemyType enemyType;
 
+        public int exp;
         public Monster()
         {
             playerImage = new string[2];
@@ -40,6 +41,7 @@ namespace ConsoleProject_2
             status.defence = 0;
             pos.x = 150;
             pos.y = 57;
+            exp = 3;
             enemyType = EnemyType.normal;
             SetMonsterPos(playerImage);
         }
