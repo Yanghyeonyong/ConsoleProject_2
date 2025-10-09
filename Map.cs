@@ -544,7 +544,16 @@ namespace ConsoleProject_2
 
         public static void DrawVillageMap()
         {
+            GameSystem.RemoveMonster();
+            for (int i = 0; i < baseMap.GetLength(0); i++)
+            {
+                for (int j = 0; j < baseMap.GetLength(1); j++)
+                {
+                    baseMap[i, j] = false;
+                }
+            }
             Console.Clear();
+            InitBaseMap();
             Console.SetCursorPosition(0, 0);
 
             Console.Write(

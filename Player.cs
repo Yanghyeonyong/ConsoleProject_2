@@ -206,9 +206,6 @@ namespace ConsoleProject_2
                                         if (Map.adventurePortal_Stage1[pos.x, pos.y]&&currentStage==0)
                                         {
                                             OnAdventure();
-                                            //currentStage = 1;
-                                            //Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
-                                            Console.WriteLine("dkkkkkkkkkkkkkkkkkk현재 curentStage = " + currentStage);
                                         }
                                         if (Map.homePortal[pos.x, pos.y])
                                         {
@@ -554,65 +551,6 @@ namespace ConsoleProject_2
             Console.Clear();
         }
         //초기 시작시 혹은 레벨업 시(레벨업 시는 마을에서) 스테이터스 설정
-        public void SetMyStatusOnStart()
-        {
-            bool setStatus = true;
-            bool retry = false;
-            ConsoleKeyInfo key;
-
-            int originalStatPoint = statPoint;
-            int originalHp = myBaseStatus.hp;
-            int originalAttack = myBaseStatus.attack;
-            int originalDefence = myBaseStatus.defence;
-
-            //사용자 입력 기반 스탯 배분(hp는 최소 1 이상 필요)
-            //입력 순서 hp mp 공격력, 방어력 크확 ,크뎀
-            while (true)
-            {
-                Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷ 스탯을 분배해주세요(총 {statPoint} point) ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△");
-
-                setStatus = true;
-                statPoint = originalStatPoint;
-                myBaseStatus.hp = originalHp;
-                myBaseStatus.attack = originalAttack;
-                myBaseStatus.defence = originalDefence;
-
-                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("HP(기본 10) : ");
-                    myBaseStatus.hp += SetMyStatusDetail(0);
-                    Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("공격력(기본 1) : ");
-                myBaseStatus.attack += SetMyStatusDetail(0);
-
-                Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
-                Console.Write("방어력(기본 0) : ");
-                myBaseStatus.defence += SetMyStatusDetail(0);
-
-                Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");
-                while (setStatus)
-                {
-                    key = Console.ReadKey(true);
-                    switch (key.Key)
-                    {
-                        case ConsoleKey.Enter:
-                            setStatus = false;
-                            retry = false;
-                            break;
-                        case ConsoleKey.A:
-                            Console.Clear();
-                            setStatus = false;
-                            retry = true;
-                            break;
-                    }
-                }
-                if (!retry)
-                {
-                    break;
-                }
-            }
-            SetTotalStatus();
-            Console.WriteLine();
-        }
         public void InitBaseEquipment()
         {
             equipment.myItem = new List<PlayerItem>();
@@ -625,7 +563,7 @@ namespace ConsoleProject_2
         public void SetMyCharacterOnStart()
         {
             SetMyName();
-            SetMyStatusOnStart();
+            SetMyStatus();
         }
 
         #endregion
@@ -641,11 +579,12 @@ namespace ConsoleProject_2
             Console.WriteLine("1. 내 캐릭터의 장비");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 레벨업");
+            Console.WriteLine("4. 스탯 설정");
             Console.WriteLine("그 이외의 숫자 입력시 마을로 복귀합니다.");
             Console.WriteLine("\n원하는 번호를 입력하세요\n");
             Console.Write("▶ ");
             myInt = Read.ReadUInt(0);
-            if (myInt > 3)
+            if (myInt > 4)
             {
                 OnVillage();
             }
@@ -664,6 +603,11 @@ namespace ConsoleProject_2
             else if (myInt == 3)
             {
                 LevelUp();
+            }
+            else if (myInt == 4)
+            {
+                SetMyStatus();
+                ShowMyCharacter();
             }
         }
         public void ShowMyCharacterInformation()
@@ -721,6 +665,86 @@ namespace ConsoleProject_2
             statPoint -= usingStatPoint;
             return usingStatPoint;
         }
+        public void SetMyStatus()
+        {
+            bool setStatus = true;
+            bool retry = false;
+            ConsoleKeyInfo key;
+
+            int originalStatPoint = statPoint;
+            int originalHp = myBaseStatus.hp;
+            int originalAttack = myBaseStatus.attack;
+            int originalDefence = myBaseStatus.defence;
+
+            if (originalStatPoint > 0)
+            {
+                //사용자 입력 기반 스탯 배분(hp는 최소 1 이상 필요)
+                //입력 순서 hp mp 공격력, 방어력 크확 ,크뎀
+                while (true)
+                {
+                    Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷ 스탯을 분배해주세요(총 {statPoint} point) ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△");
+
+                    setStatus = true;
+                    statPoint = originalStatPoint;
+                    myBaseStatus.hp = originalHp;
+                    myBaseStatus.attack = originalAttack;
+                    myBaseStatus.defence = originalDefence;
+
+                    Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                    Console.Write("HP(기본 10) : ");
+                    myBaseStatus.hp += SetMyStatusDetail(0);
+                    Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                    Console.Write("공격력(기본 1) : ");
+                    myBaseStatus.attack += SetMyStatusDetail(0);
+
+                    Console.WriteLine($"\n▶ 잔여스탯 {statPoint: 000} point ◀");
+                    Console.Write("방어력(기본 0) : ");
+                    myBaseStatus.defence += SetMyStatusDetail(0);
+
+                    Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");
+                    while (setStatus)
+                    {
+                        key = Console.ReadKey(true);
+                        switch (key.Key)
+                        {
+                            case ConsoleKey.Enter:
+                                setStatus = false;
+                                retry = false;
+                                break;
+                            case ConsoleKey.A:
+                                Console.Clear();
+                                setStatus = false;
+                                retry = true;
+                                break;
+                        }
+                    }
+                    if (!retry)
+                    {
+                        break;
+                    }
+                }
+                SetTotalStatus();
+                Console.WriteLine();
+            }
+            else
+            {
+                bool returnPage = true;
+                Console.WriteLine("잔여 스탯이 부족합니다.");
+                Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
+                while (returnPage)
+                {
+                    key = Console.ReadKey(true);
+
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.Enter:
+                            returnPage = false;
+                            break;
+                    }
+                }
+                ShowMyCharacter();
+            }
+        }
 
         //캐릭터 Total 스테이터스(초기 스탯+장비 스탯_
         public void SetTotalStatus()
@@ -768,14 +792,7 @@ namespace ConsoleProject_2
             pos.y = 30;
             SetCharacterPos(playerImage);
 
-            //일단 테스트용이라 현재는 true로 둔거고
-            //나중엔 사냥터 갔을 때만 true로 바꿀 예정
             onAdventure = false;
-            //이거도 테스트용이라 지금 여기서 실행하는 거임
-            //Gravity();
-
-            //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
-            //onJump = true;
         }
 
         //모험으로 이동
