@@ -16,7 +16,7 @@ namespace ConsoleProject_2
             //isInt 만족 못할 시 무한 반복
             while (isInt == false)
             {
-                Console.Write("\t▶ ");
+                //Console.Write("\t▶ ");
 
                 //정수 입력 시도
                 isInt = int.TryParse(Console.ReadLine(), out myInt);
@@ -44,7 +44,7 @@ namespace ConsoleProject_2
             //isInt 만족 못할 시 무한 반복
             while (isInt == false)
             {
-                Console.Write("\t지속 시간 ▶ ");
+                //Console.Write("\t▶ ");
 
                 //정수 입력 시도
                 isInt = int.TryParse(Console.ReadLine(), out myInt);

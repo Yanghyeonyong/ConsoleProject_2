@@ -8,68 +8,56 @@ namespace ConsoleProject_2
 {
     enum EnemyType
     { normal, boss }
-    internal class Monster
+    internal class Monster : Computer
     {
-        //플레이어랑 코드 같은 것은 나중에 부모 클래스를 만들어서 상속시킬 예정
-        string name;
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public MyPos pos;
-
-        public string[] playerImage;
-        static string[] eraserplayerImage;
-
-        public Status status;
+        static Random randomDir = new Random();
+        Direction dir;
         EnemyType enemyType;
 
         public int exp;
+        bool isAttack=false;
         public Monster()
         {
             playerImage = new string[2];
             playerImage[0] = "   @ @  ";
             playerImage[1] = "( *△* )";//<-이거 특수문자 때문에 크기 8 먹는다 [2]*8 배열인듯
-            eraserplayerImage = new string[2];
-            eraserplayerImage[0] = "        ";
-            eraserplayerImage[1] = "        ";
-            Name = "슬라임";
-            status.attack = 3;
-            status.hp = 10;
-            status.defence = 0;
+            name = "슬라임";
+            myBaseStatus.attack = 3;
+            myBaseStatus.hp = 10;
+            myBaseStatus.defence = 0;
             pos.x = 150;
             pos.y = 57;
             exp = 3;
             enemyType = EnemyType.normal;
             SetMonsterPos(playerImage);
         }
-        public Monster(int x, int y)
+        public Monster(int x=100, int y=30)
         {
             playerImage = new string[2];
             playerImage[0] = "   @ @  ";
             playerImage[1] = "( *△* )";//<-이거 특수문자 때문에 크기 8 먹는다 [2]*8 배열인듯
-            eraserplayerImage = new string[2];
-            eraserplayerImage[0] = "        ";
-            eraserplayerImage[1] = "        ";
-            Name = "일반몹";
-            status.attack = 3;
-            status.hp = 10;
-            status.defence = 0;
+            name = "일반몹";
+            myBaseStatus.attack = 3;
+            myBaseStatus.hp = 10;
+            myBaseStatus.defence = 0;
             pos.x = x;
             pos.y = y;
             exp = 3;
             enemyType = EnemyType.normal;
             SetMonsterPos(playerImage);
         }
-        public Monster(string name, int x, int y, EnemyType type)
+        public Monster(string monsterName, int x, int y, EnemyType type)
         {
-            Name = name;
+            name = monsterName;
             pos.x = x;
             pos.y = y;
             enemyType = type;
             SetMonsterPos(playerImage);
+        }
+
+        public void Attack()
+        {
+
         }
 
         public void BossMonster(int x, int y)
@@ -107,16 +95,10 @@ namespace ConsoleProject_2
             playerImage[27] = "                    %*----===+##+++==+++#%#%==========*#                       ";
             playerImage[28] = "                     ##=--===+%            #%-----===##                        ";
             playerImage[29] = "                       #%%%%#                #%+=++#%                          ";
-            string eraser = "                                                                                 ";
-            eraserplayerImage = new string[30];
-            for (int i = 0; i < eraserplayerImage.Length; i++)
-            {
-                eraserplayerImage[i] = eraser;
-            }
-            Name = "보스";
-            status.attack = 10;
-            status.hp = 100;
-            status.defence = 10;
+            name = "보스";
+            myBaseStatus.attack = 10;
+            myBaseStatus.hp = 100;
+            myBaseStatus.defence = 10;
             pos.x = x;
             pos.y = y;
             exp = 100;
@@ -198,20 +180,29 @@ namespace ConsoleProject_2
                 Console.SetCursorPosition(pos.x, pos.y + i);
                 Console.Write(s[i]);
             }
-            //Console.SetCursorPosition(pos.x, pos.y);
-            //Console.Write(s[0]);
-            //Console.SetCursorPosition(pos.x, pos.y + 1);
-            //Console.Write(s[1]);
         }
         public void SetMonsterPos(string[] s)
         {
-            Map.SetMonsterMap(pos.x, pos.y);
+            isAttack=Map.SetMonsterMap(pos.x, pos.y);
+            //Map.SetMonsterMap(pos.x, pos.y);
             Console.SetCursorPosition(pos.x, pos.y);
             Console.Write(s[0]);
             Console.SetCursorPosition(pos.x, pos.y + 1);
             Console.Write(s[1]);
+            Map.monsterAttackMap[pos.x, pos.y] = true;
+
+            if (isAttack)
+            {
+                GameSystem.AttackPlayer(myBaseStatus.attack);
+                isAttack = false;
+            }
         }
 
+        public void RandomMove()
+        {
+            dir = (Direction)randomDir.Next(2);
+            Move(dir);
+        }
         public void Move(Direction dir)
         {
             Map.SetMonsterMap(pos.x, pos.y);
@@ -226,6 +217,8 @@ namespace ConsoleProject_2
                 Console.Write(Map.adventureMap[pos.x + i, pos.y + 1]);
             }
 
+
+
             switch (dir)
             {
                 case Direction.left:
@@ -234,17 +227,10 @@ namespace ConsoleProject_2
                 case Direction.right:
                     pos.x++;
                     break;
-                case Direction.up:
-                    pos.y--;
-                    break;
-                case Direction.down:
-                    pos.y++;
-                    break;
             }
-
-
             SetMonsterPos(playerImage);
         }
+
         public void MoveLeft()
         {
             //특수문자라 -2다 일반이면 -1로 바꿔야 한다
@@ -263,7 +249,15 @@ namespace ConsoleProject_2
 
         public void Die()
         {
+            for (int i = 0; i < playerImage.Length; i++)
+            {
+                for (int j = 0; j < playerImage[0].Length;j++)
+                {
+                    Map.monsterAttackMap[pos.x + j, pos.y + i] = false;
+                }
+            }
             Map.SetMonsterMap(pos.x, pos.y);
+
             Console.SetCursorPosition(pos.x, pos.y);
             for (int i = 0; i < 8; i++)
             {

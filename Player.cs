@@ -13,21 +13,6 @@ namespace ConsoleProject_2
     enum Direction
     { left, right, up, down }
 
-    struct MyPos
-    {
-        public int x;
-        public int y;
-    }
-
-    // 캐릭터 스테이터스, hp, mp, 방어력, 공격력, 치명타 확률, 치명타 데미지
-    struct Status
-    {
-        public int hp;
-        //public int mp;
-        public int defence;
-        public int attack;
-    }
-
     //플레이어가 착용한 아이템
     struct Equipment
     {
@@ -35,34 +20,16 @@ namespace ConsoleProject_2
         public Potion myPotion;
     }
 
-
-    internal class Player
+    internal class Player : Computer
     {
-        string name;
         Direction dir;
 
-        static string[] playerImage;
-        static string[] eraserplayerImage;
-
-        bool onAdventure;
-        bool onVillage;
-        //더블점프 포기하고 그냥 점프중엔 다시 점프 조작 안되게 만들기 위함
-        bool onJump;
+        public bool onAdventure;
+        public bool onVillage;
+        public int currentStage;
 
         //전방을 바라보고 있는지 확인
-        bool onFront;
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        //해당 좌표는 플레이어의 좌측 상단 좌표이다
-        public MyPos pos;
-
-
-        //캐릭터 자체의 스탯
-        public Status myBaseStatus;
+        public bool onFront;
 
         //캐릭터 자체의 스탯 + 아이템 스탯<-향후 아이템 추가 후 메서드 추가
         public Status myTotalStatus;
@@ -71,7 +38,7 @@ namespace ConsoleProject_2
         public Inventory inventory;
 
         //착용 장비
-        Equipment equipment;
+        public Equipment equipment;
         const int MaxEquipment = 5;
 
         //현재 체력, 위에는 맥스 체력임
@@ -79,253 +46,100 @@ namespace ConsoleProject_2
         //경험치 및 레벨
         int level;
         int maxExp;
-        public int currentExp;
+        int exp;
         int statPoint;
 
-        int currentStage;
-
-        bool onStart = false;
-        public Player(bool test)
-        {
-        }
 
         public Player()
         {
             playerImage = new string[2];
             playerImage[0] = " ∧ ∧";
             playerImage[1] = "( '▽' )";//<-이거 특수문자 때문에 크기 8 먹는다 [2]*8 배열인듯
-            Name = "Nothing";
-            eraserplayerImage = new string[2];
-            eraserplayerImage[0] = "        ";
-            eraserplayerImage[1] = "        ";
+            name = "Nothing";
             pos.x = 100;
             pos.y = 30;
-
         }
-
-
 
         #region 조작
-        public void ControlPlayer()
+
+        public void Jump()
         {
-            BackgroundWorker control = new BackgroundWorker();
-            ConsoleKeyInfo key;
-            control.DoWork += (sender, e) =>
+            for (int i = 0; i < 10; i++)
             {
-                Stopwatch gravity= new Stopwatch();
-                Stopwatch attackDelay= new Stopwatch();
+                MoveUp();
+            }
 
-                gravity.Start();
-                attackDelay.Start();
-
-                List<int> attackPosX;
-                List<int> attackPosY;
-                int attackX;
-                int attackY;
-                attackPosX = new List<int>();
-                attackPosY = new List<int>();
-                bool onAttack=false;
-                while (true)
-                {
-                    if (Console.KeyAvailable)
-                    {
-                        if (onVillage || onAdventure)
-                        {
-                            key = Console.ReadKey(true);
-                            switch (key.Key)
-                            {
-                                case ConsoleKey.UpArrow:
-                                    if (!onAdventure && onVillage)
-                                    {
-                                        MoveUp();
-                                    }
-                                    else if (onAdventure && !onVillage)
-                                    {
-                                        //Console.WriteLine("점프!!");
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        MoveUp();
-                                        //Console.WriteLine("점프 성공");
-                                    }
-                                    break;
-                                case ConsoleKey.DownArrow:
-                                    MoveDown();
-                                    break;
-                                case ConsoleKey.LeftArrow:
-                                    onFront = false;
-                                    MoveLeft();
-                                    break;
-                                case ConsoleKey.RightArrow:
-                                    onFront = true;
-                                    MoveRight();
-                                    break;
-                                case ConsoleKey.A:
-                                    if (attackDelay.ElapsedMilliseconds >= 1500)
-                                    {
-                                        if (!onAttack)
-                                        {
-                                            onAttack = true;
-                                        }
-
-                                        if (onFront)
-                                        {
-                                            Attack(3, 0, 0, 0, attackPosX, attackPosY);
-
-                                        }
-                                        else
-                                        {
-                                            Attack(0, 3, 0, 0, attackPosX, attackPosY);
-                                        }
-                                        attackDelay.Restart();
-                                    }
-                                    
-                                    break;
-                                case ConsoleKey.S:
-                                    currentHp += equipment.myPotion.healingHp;
-                                    if (currentHp > myTotalStatus.hp)
-                                    {
-                                        currentHp = myTotalStatus.hp;
-                                    }
-                                    break;
-                                case ConsoleKey.Spacebar:
-                                    if (onVillage)
-                                    {
-                                        if (Map.shopPortal[pos.x, pos.y])
-                                        {
-                                            onVillage = false;
-                                            onAdventure = false;
-                                            OnShop();
-                                        }
-                                        if (Map.adventurePortal_Stage1[pos.x, pos.y]&&currentStage==0)
-                                        {
-                                            OnAdventure();
-                                        }
-                                        if (Map.homePortal[pos.x, pos.y])
-                                        {
-                                            onVillage = false;
-                                            onAdventure = false;
-                                            ShowMyCharacter();
-                                        }
-                                    }
-                                    if (onAdventure)
-                                    {
-                                        if (Map.villagePortal[pos.x, pos.y])
-                                        {
-                                            OnVillage();
-                                        }
-                                        if (Map.adventurePortal_Stage2[pos.x, pos.y] && currentStage == 1)
-                                        {
-                                            //currentStage = 2;
-                                            OnAdventure2();
-                                            //Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
-                                        }
-                                        if (Map.adventurePortal_Stage3[pos.x, pos.y] && currentStage == 2)
-                                        {
-                                            //currentStage = 3;
-                                            OnAdventure3();
-                                        }
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                    if (onAdventure && !onVillage)
-                    {
-                        if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]&&gravity.ElapsedTicks%5000==0)
-                        {
-                            MoveDown();
-                            gravity.Restart();
-                            //여기다가 몬스터 일정 시간마다 움직이는 코드 넣어도 될 듯?
-                        }
-                    }
-
-                    if (attackDelay.ElapsedMilliseconds == 1000&&onAttack)
-                    {
-                        //Console.WriteLine("지우개 시작ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
-                        for (int i = 0; i < attackPosX.Count; i++)
-                        {
-                            attackX = attackPosX[i];
-                            attackY = attackPosY[i];
-                            Console.SetCursorPosition(attackX,attackY);
-                            Map.AttackMap[attackX, attackY] =false;
-                            Console.Write(Map.adventureMap[attackX,attackY]);
-                        }
-
-                        Console.SetCursorPosition(pos.x, pos.y);
-                        Console.Write(playerImage[0]);
-                        Console.SetCursorPosition(pos.x, pos.y + 1);
-                        Console.Write(playerImage[1]);
-                        attackPosX.RemoveRange(0, attackPosX.Count-1);
-                        attackPosY.RemoveRange(0, attackPosY.Count-1);
-                    }
-                }
-            };
-            control.RunWorkerCompleted += (sender, e) =>
-            {
-                control = null;
-            };
-            control.RunWorkerAsync();
         }
-        public void SetCharacterPos(string[] s)
+
+        public void UsingPotion()
+        {
+            if (equipment.myPotion != null)
+            {
+                currentHp += equipment.myPotion.hp;
+                if (currentHp > myTotalStatus.hp)
+                {
+                    currentHp = myTotalStatus.hp;
+                }
+            }
+            DrawMyInformation();
+        }
+        public void DrawCharacter()
+        {
+            Console.SetCursorPosition(pos.x, pos.y);
+            Console.Write(playerImage[0]);
+            Console.SetCursorPosition(pos.x, pos.y + 1);
+            Console.Write(playerImage[1]);
+        }
+
+        void SetCharacterPos()
         {
             Map.SetPlayerMap(pos.x, pos.y);
-            Console.SetCursorPosition(pos.x, pos.y);
-            Console.Write(s[0]);
-            Console.SetCursorPosition(pos.x, pos.y + 1);
-            Console.Write(s[1]);
+            DrawCharacter();
         }
 
-        public void Move(Direction dir)
+        void RestoreMap(char[,] map)
+        {
+            Console.SetCursorPosition(pos.x, pos.y);
+            for (int i = 0; i <= playerImage[1].Length; i++)
+            {
+                Console.Write(map[pos.x + i, pos.y]);
+            }
+            Console.SetCursorPosition(pos.x, pos.y + 1);
+            for (int i = 0; i <= playerImage[1].Length; i++)
+            {
+                Console.Write(map[pos.x + i, pos.y + 1]);
+            }
+        }
+
+        void RestoreText(int x, int y)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.Write(Map.NextStage[i]);
+            }
+        }
+
+        void Move(Direction dir)
         {
             Map.SetPlayerMap(pos.x,pos.y);
             if (onVillage)
             {
-                Console.SetCursorPosition(pos.x, pos.y);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.villageMap[pos.x + i, pos.y]);
-                }
-                Console.SetCursorPosition(pos.x, pos.y+1);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.villageMap[pos.x + i, pos.y+1]);
-                }
+                RestoreMap(Map.villageMap);
             }
             else if (onAdventure)
             {
-                Console.SetCursorPosition(pos.x, pos.y);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.adventureMap[pos.x + i, pos.y]);
-                }
-                Console.SetCursorPosition(pos.x, pos.y+1);
-                for (int i = 0; i < 8; i++)
-                {
-                    Console.Write(Map.adventureMap[pos.x + i, pos.y+1]);
-                }
+                RestoreMap(Map.adventureMap);
+
                 if (currentStage == 1)
                 {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        Console.SetCursorPosition(Map.BaseMap.GetLength(0) - 30, 9 + i);
-                        Console.Write(Map.NextStage[i]);
-                    }
+                    RestoreText(Map.BaseMap.GetLength(0) - 30, 9);
                 }
                 if (currentStage == 2)
                 {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        Console.SetCursorPosition(170, 54 + i);
-                        Console.Write(Map.NextStage[i]);
-                    }
+                    RestoreText(170, 54);
                 }
+                DrawMyInformation();
             }
 
             switch (dir)
@@ -344,47 +158,54 @@ namespace ConsoleProject_2
                     break;
             }
 
-            SetCharacterPos(playerImage);
+            SetCharacterPos();
         }
+
+
         public void MoveLeft()
         {
-            //특수문자라 -2다 일반이면 -1로 바꿔야 한다
             if (!Map.BaseMap[pos.x - 2, pos.y] 
-                && !Map.MonsterMap[Math.Max(0,pos.x - 8), pos.y+1] 
-                && !Map.MonsterMap[Math.Max(0, pos.x - 8), pos.y] 
-                && !Map.MonsterMap[Math.Max(0, pos.x - 8), pos.y-1])
+                && EnableMoveRangeY(Math.Max(0, pos.x - 7),pos.y))
             {
                 Move(Direction.left);
+                if (!Map.monsterAttackMap[pos.x, pos.y])
+                {
+                    
+                    Move(Direction.right);
+                    Move(Direction.right);
+                    Console.SetCursorPosition(pos.x-2, pos.y+1);
+                    Console.Write(')');
+                    GameSystem.AttackPlayer(GameSystem.monsterPos[(pos.x-9) * 200 + pos.y * 60].myBaseStatus.attack);
+                    if (onAdventure)
+                    {
+                        DrawMyInformation();
+                    }
+                }
             }
         }
         public void MoveRight()
         {
-            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y] 
-                && !Map.MonsterMap[Math.Max(0, pos.x) + playerImage[1].Length+1, pos.y + 1] 
-                && !Map.MonsterMap[Math.Max(0, pos.x) + playerImage[1].Length + 1, pos.y] 
-                && !Map.MonsterMap[Math.Max(0, pos.x) + playerImage[1].Length + 1, pos.y - 1])
+            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1 , pos.y] 
+                && EnableMoveRangeY(Math.Max(0, pos.x) + playerImage[1].Length-1, pos.y))
             {
                 Move(Direction.right);
+                if (!Map.monsterAttackMap[pos.x+8, pos.y])
+                {
+                    Move(Direction.left);
+                    Move(Direction.left);
+                    Console.SetCursorPosition(pos.x + 9, pos.y + 1);
+                    Console.Write('(');
+                    GameSystem.AttackPlayer(GameSystem.monsterPos[(pos.x +9) * 200 + pos.y * 60].myBaseStatus.attack);
+                    if (onAdventure)
+                    {
+                        DrawMyInformation();
+                    }
+                }
             }
         }
         public void MoveUp()
         {
-            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x-7), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x-6), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x-5), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x-4), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x-3), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x-2), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x-1), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x+1), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x+2), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x+3), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x+4), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x+5), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x+6), pos.y - playerImage.Length + 1]
-                && !Map.MonsterMap[Math.Max(0, pos.x+7), pos.y - playerImage.Length + 1])
+            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1]&&EnableMoveRangeX(pos.x, pos.y - playerImage.Length+1))
             {
                 Move(Direction.up);
             }
@@ -393,31 +214,38 @@ namespace ConsoleProject_2
         public void MoveDown()
         {
             if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x - 7), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x - 6), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x - 5), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x - 4), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x - 3), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x - 2), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x - 1), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x + 1), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x + 2), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x + 3), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x + 4), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x + 5), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x + 6), pos.y + playerImage.Length]
-                && !Map.MonsterMap[Math.Max(0, pos.x + 7), pos.y + playerImage.Length]
-                )
+                &&EnableMoveRangeX(pos.x, pos.y + playerImage.Length))
             {
                 Move(Direction.down);
             }
-
         }
+
+        public bool EnableMoveRangeX(int x, int y)
+        {
+            for (int i = -playerImage[1].Length; i <= playerImage[1].Length; i++)
+            {
+                if (Map.MonsterMap[Math.Max(0, x + i), y])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public bool EnableMoveRangeY(int x, int y)
+        {
+            for (int i = -playerImage.Length+1; i <= playerImage.Length-1; i++)
+            {
+                if (Map.MonsterMap[x, y+i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, List<int> attackX, List<int> attackY)
         {
             int forward = 0;
-            bool check = false;
             //전방 공격
             for (int i = 1; i <= forwardRangeX; i++)
             {
@@ -426,29 +254,11 @@ namespace ConsoleProject_2
                 {
                     break;
                 }
-
-                for (int j = 0; j < playerImage.Length; j++)
-                {
-                    Map.AttackMap[forward, pos.y + j] = true;
-                    if ((Map.AttackMap[forward, pos.y + j] && Map.MonsterMap[forward, pos.y + j]))
-                    {
-                        GameSystem.AttackMonster(forward, pos.y + j);
-                        check=true;
-                        break;
-                    }
-                    Console.SetCursorPosition(forward, pos.y + j);
-                    Console.Write("c");
-                    attackX.Add(forward);
-                    attackY.Add(pos.y + j);
-
-                }
-                if (check)
+                if (AttackRange(forward, pos.y, 0, attackX, attackY))
                 {
                     break;
-                }    
+                }
             }
-
-            check = false;
 
             int rear = 0;
             //후방 공격
@@ -459,30 +269,53 @@ namespace ConsoleProject_2
                 {
                     break;
                 }
-
-                for (int j = 0; j < playerImage.Length; j++)
-                {
-                    Map.AttackMap[rear, pos.y + j] = true;
-
-                    if ((Map.AttackMap[rear, pos.y + j] && Map.MonsterMap[rear-7, pos.y + j]))
-                    {
-                        GameSystem.AttackMonster(rear - 7, pos.y + j);
-                        check = true;
-                        break;
-                    }
-                    Console.SetCursorPosition(rear, pos.y + j);
-                    Console.Write("c");
-
-                    attackX.Add(rear);
-                    attackY.Add(pos.y + j);
-                }
-                if (check)
+                if (AttackRange(rear, pos.y, playerImage[1].Length, attackX, attackY))
                 {
                     break;
                 }
             }
+
         }
 
+        public bool AttackRange(int rangeX, int rangeY, int rearRange, List<int> attackX, List<int> attackY)
+        {
+
+            for (int j = 0; j < playerImage.Length; j++)
+                {
+                Map.playerAttackMap[rangeX, rangeY+j] = true;
+
+                    if (Map.playerAttackMap[rangeX, rangeY+j] && Map.MonsterMap[rangeX-rearRange, rangeY + j])
+                    {
+                    GameSystem.AttackMonster(rangeX - rearRange, rangeY + j);
+                        return true;
+                    }
+                    Console.SetCursorPosition(rangeX, rangeY + j);
+                    Console.Write("#");
+
+                    attackX.Add(rangeX);
+                    attackY.Add(rangeY + j);
+                }
+            return false;
+        }
+
+        public void AttackByMonster(int monsterAttack)
+        {
+            if (currentHp > monsterAttack)
+            {
+                currentHp -= monsterAttack;
+            }
+            else
+            {
+                Die();
+            }
+        }
+
+        public void Die()
+        {
+            GameSystem.monsterMove = null;
+            currentHp=myTotalStatus.hp;
+            OnVillage();
+        }
         #endregion
 
         #region 캐릭터 초기 설정
@@ -516,15 +349,15 @@ namespace ConsoleProject_2
             ConsoleKeyInfo key;
             bool setName = true;
             bool retry = false;
-            string name;
+            string playerName;
 
             while (true)
             {
                 setName = true;
-                Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷   당 신 은     누 구 신 가 요 ?   ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+                Console.WriteLine("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷   당 신 은     누 구 신 가 요 ?  ◁\n△△△△△△△△△△△△△△△△△△△\n");
                 Console.Write("이름 : ");
-                name = Console.ReadLine();
-                Console.WriteLine($"\n당신의 이름은 [{name}] 맞습니까?\n\n다음으로 넘어가고자 한다면 Enter\n재입력을 원하시면 A 키를 눌러주세요\n");
+                playerName = Console.ReadLine();
+                Console.WriteLine($"\n당신의 이름은 [{playerName}] 맞습니까?\n\n다음으로 넘어가고자 한다면 Enter\n재입력을 원하시면 Esc 키를 눌러주세요\n");
                 while (setName)
                 {
                     key = Console.ReadKey(true);
@@ -535,7 +368,7 @@ namespace ConsoleProject_2
                             setName = false;
                             retry = false;
                             break;
-                        case ConsoleKey.A:
+                        case ConsoleKey.Escape:
                             Console.Clear();
                             setName = false;
                             retry = true;
@@ -547,17 +380,13 @@ namespace ConsoleProject_2
                     break;
                 }
             }
-            Name = name;
+            name = playerName;
             Console.Clear();
         }
         //초기 시작시 혹은 레벨업 시(레벨업 시는 마을에서) 스테이터스 설정
         public void InitBaseEquipment()
         {
             equipment.myItem = new List<PlayerItem>();
-            //for (int i = 0; i < equipment.myItem.Length; i++)
-            //{
-            //    equipment.myItem[i] = new PlayerItem();
-            //}
             equipment.myPotion = new Potion("체력 포션", 50);
         }
         public void SetMyCharacterOnStart()
@@ -572,57 +401,52 @@ namespace ConsoleProject_2
         public void ShowMyCharacter()
         {
             Console.Clear();
-            int myInt;
-            Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷     캐 릭 터           정 보      ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine(" _   _  ___  __  __ _____ \r\n| | | |/ _ \\|  \\/  | ____|\r\n| |_| | | | | |\\/| |  _|  \r\n|  _  | |_| | |  | | |___ \r\n|_| |_|\\___/|_|  |_|_____|");
             Console.WriteLine("무엇을 확인하시겠습니까?");
-            Console.WriteLine("0. 내 캐릭터의 스테이터스");
-            Console.WriteLine("1. 내 캐릭터의 장비");
-            Console.WriteLine("2. 인벤토리");
-            Console.WriteLine("3. 레벨업");
-            Console.WriteLine("4. 스탯 설정");
-            Console.WriteLine("그 이외의 숫자 입력시 마을로 복귀합니다.");
+            Console.WriteLine("0. 마을로 귀환");
+            Console.WriteLine("1. 내 캐릭터의 스테이터스");
+            Console.WriteLine("2. 내 캐릭터의 장비");
+            Console.WriteLine("3. 인벤토리");
+            Console.WriteLine("4. 레벨업");
+            Console.WriteLine("5. 스탯 설정");
             Console.WriteLine("\n원하는 번호를 입력하세요\n");
             Console.Write("▶ ");
-            myInt = Read.ReadUInt(0);
-            if (myInt > 4)
+            switch (Read.ReadInt(0,5))
             {
-                OnVillage();
-            }
-            else if (myInt == 0)
-            {
-                ShowMyCharacterInformation();
-            }
-            else if (myInt == 1)
-            {
-                ShowMyEquipment();
-            }
-            else if (myInt == 2)
-            {
-                ShowMyInventory();
-            }
-            else if (myInt == 3)
-            {
-                LevelUp();
-            }
-            else if (myInt == 4)
-            {
-                SetMyStatus();
-                ShowMyCharacter();
+                case 0:
+                    OnVillage();
+                    break;
+                case 1:
+                    ShowMyCharacterInformation();
+                    break;
+                case 2:
+                    ShowMyEquipment();
+                    break;
+                case 3:
+                    ShowMyInventory();
+                    break;
+                case 4:
+                    LevelUp(); 
+                    break;
+                case 5:
+                    SetMyStatus();
+                    ShowMyCharacter();
+                    break;
             }
         }
-        public void ShowMyCharacterInformation()
+        void ShowMyCharacterInformation()
         {
             Console.Clear();
             ConsoleKeyInfo key;
             bool returnPage = true;
 
             Console.WriteLine($"이름 : {name}");
-            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷        B a s e S t a t u s        ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷        B a s e S t a t u s        ◁\n△△△△△△△△△△△△△△△△△△△\n");
             Console.WriteLine($"HP : {myBaseStatus.hp}");
             Console.WriteLine($"공격력 : {myBaseStatus.attack}");
             Console.WriteLine($"방어력 : {myBaseStatus.defence}");
 
-            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷       T o t a l S t a t u s       ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷       T o t a l S t a t u s       ◁\n△△△△△△△△△△△△△△△△△△△\n");
             Console.WriteLine($"HP : {currentHp}/{myTotalStatus.hp}");
             Console.WriteLine($"공격력 : {myTotalStatus.attack}");
             Console.WriteLine($"방어력 : {myTotalStatus.defence}");
@@ -642,7 +466,7 @@ namespace ConsoleProject_2
             ShowMyCharacter();
         }
         //캐릭터 스탯 설정
-        public int SetMyStatusDetail(int minStatPoint)
+        int SetMyStatusDetail(int minStatPoint)
         {
             int usingStatPoint = 0;
             while (true)
@@ -665,7 +489,7 @@ namespace ConsoleProject_2
             statPoint -= usingStatPoint;
             return usingStatPoint;
         }
-        public void SetMyStatus()
+        void SetMyStatus()
         {
             bool setStatus = true;
             bool retry = false;
@@ -679,10 +503,10 @@ namespace ConsoleProject_2
             if (originalStatPoint > 0)
             {
                 //사용자 입력 기반 스탯 배분(hp는 최소 1 이상 필요)
-                //입력 순서 hp mp 공격력, 방어력 크확 ,크뎀
+                //입력 순서 hp 공격력, 방어력
                 while (true)
                 {
-                    Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷ 스탯을 분배해주세요(총 {statPoint} point) ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△");
+                    Console.WriteLine($"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷ 스탯을 분배해주세요(총 {originalStatPoint} point) ◁\n△△△△△△△△△△△△△△△△△△△");
 
                     setStatus = true;
                     statPoint = originalStatPoint;
@@ -701,7 +525,7 @@ namespace ConsoleProject_2
                     Console.Write("방어력(기본 0) : ");
                     myBaseStatus.defence += SetMyStatusDetail(0);
 
-                    Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 A 키를 눌러주세요");
+                    Console.WriteLine("\n스탯 분배에 만족한다면 Enter\n재설정을 원한다면 Esc 키를 눌러주세요");
                     while (setStatus)
                     {
                         key = Console.ReadKey(true);
@@ -711,7 +535,7 @@ namespace ConsoleProject_2
                                 setStatus = false;
                                 retry = false;
                                 break;
-                            case ConsoleKey.A:
+                            case ConsoleKey.Escape:
                                 Console.Clear();
                                 setStatus = false;
                                 retry = true;
@@ -742,7 +566,7 @@ namespace ConsoleProject_2
                             break;
                     }
                 }
-                ShowMyCharacter();
+                //ShowMyCharacter();
             }
         }
 
@@ -754,15 +578,12 @@ namespace ConsoleProject_2
             int defence = 0;
             int attack = 0;
 
-
-
             //아이템 수치만큼 추가
             for (int i = 0; i < equipment.myItem.Count; i++)
             {
                 hp += equipment.myItem[i].hp;
                 defence += equipment.myItem[i].defence;
                 attack += equipment.myItem[i].attack;
-
             }
 
             myTotalStatus.hp = myBaseStatus.hp + hp;
@@ -775,66 +596,53 @@ namespace ConsoleProject_2
         //마을로 이동하는 메서드
         public void OnVillage()
         {
+
+            GameSystem.RemoveMonster();
+            GameSystem.NewMapMonster();
             currentStage = 0;
             onVillage = true;
             Map.InitBaseMap();
-
+            Map.InitMonsterAttackMap();
             Map.MakePortal(0, 65, 25, 31, Map.adventurePortal_Stage1);
             Map.MakePortal(147, 182, 28, 34, Map.shopPortal);
             Map.MakePortal(81, 116, 52, 58, Map.homePortal);
             Map.MakePortal(0, 32, 54, 59,Map.villagePortal);
 
-            GameSystem.NewMapMonster();
 
-            //Console.Clear();
             Map.DrawVillageMap();
             pos.x = 100;
             pos.y = 30;
-            SetCharacterPos(playerImage);
+            SetCharacterPos();
 
             onAdventure = false;
         }
 
-        //모험으로 이동
         public void OnAdventure()
         {
-            onVillage=false;
-            onAdventure=true;
+            onVillage = false;
+            onAdventure = true;
             Map.DrawAdventureMap();
-            Map.InitBaseMapStage1();
+            switch (currentStage)
+            {
+                case 0:
+                    Map.InitBaseMapStage1();
+                    break;
+                case 1:
+                    Map.InitBaseMapStage2();
+                    break;
+                case 2:
+                    Map.InitBaseMapStage3();
+                    break;
+            }
+
             Map.DrawBaseMap();
-            currentStage = 1;
+            currentStage++;
 
             Map.SetPlayerMap(pos.x, pos.y);
             pos.x = 40;
             pos.y = 57;
-            SetCharacterPos(playerImage);
-        }
-        public void OnAdventure2()
-        {
-            Map.DrawAdventureMap();
-            Map.InitBaseMapStage2();
-            Map.DrawBaseMap();
-            currentStage = 2;
-
-            Map.SetPlayerMap(pos.x, pos.y);
-            pos.x = 40;
-            pos.y = 57;
-            SetCharacterPos(playerImage);
-        }
-        public void OnAdventure3()
-        {
-            onVillage=false;
-            onAdventure=true;
-            Map.DrawAdventureMap();
-            Map.InitBaseMapStage3();
-            Map.DrawBaseMap();
-            currentStage = 3;
-
-            Map.SetPlayerMap(pos.x, pos.y);
-            pos.x = 40;
-            pos.y = 57;
-            SetCharacterPos(playerImage);
+            SetCharacterPos();
+            DrawMyInformation();
         }
 
         //상점으로 이동
@@ -857,7 +665,7 @@ namespace ConsoleProject_2
 
             while (onShop)
             {
-                Console.Write("▶ ");
+                Console.Write("\n▶ ");
                 myInt = Read.ReadUInt(0);
                 switch (myInt)
                 {
@@ -923,7 +731,7 @@ namespace ConsoleProject_2
             ConsoleKeyInfo key;
             bool returnPage = true;
 
-            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         I n v e n t o r y         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         I n v e n t o r y         ◁\n△△△△△△△△△△△△△△△△△△△\n");
             for (int i = 0; i < inventory.inventoryItem.Count; i++)
             {
                 Console.WriteLine($"[{i + 1}]번 장비 인벤토리 ");
@@ -957,6 +765,7 @@ namespace ConsoleProject_2
                 Console.WriteLine("1. 장비 장착");
                 Console.WriteLine("2. 포션 장착");
                 Console.WriteLine("원하는 동작을 선택하세요.");
+                Console.Write("\n▶ ");
                 switch (Read.ReadInt(0, 2))
                 {
                     case 0:
@@ -964,11 +773,13 @@ namespace ConsoleProject_2
                         break;
                     case 1:
                         Console.WriteLine("착용을 원하는 장비 번호를 입력하세요");
-                        EquipItem(Read.ReadUInt(0));
+                        Console.Write("\n▶ ");
+                        EquipItem(Read.ReadUInt(0)-1);
                         break;
                     case 2:
                         Console.WriteLine("착용을 원하는 포션 번호를 입력하세요");
-                        EquipPotion(Read.ReadUInt(0));
+                        Console.Write("\n▶ ");
+                        EquipPotion(Read.ReadUInt(0) - 1);
                         break;
                 }
             }
@@ -989,41 +800,48 @@ namespace ConsoleProject_2
                 }
                 else
                 {
-                    Console.WriteLine("해당 인벤토리에 장비가 없습니다.");
+                    Console.WriteLine("해당 인벤토리에 장비가 없습니다.\n");
                 }
             }
             else
             {
-                Console.WriteLine("더 이상 장비를 착용할 수 없습니다.");
+                Console.WriteLine("더 이상 장비를 착용할 수 없습니다.\n");
             }
         }
         //포션을 장착하는 메서드
         public void EquipPotion(int itemNum)
         {
-            if (inventory.inventoryPotion[itemNum] != null)
+            if (itemNum < inventory.inventoryPotion.Count)
             {
-                if (equipment.myPotion == null)
+                if (inventory.inventoryPotion[itemNum] != null)
                 {
-                    equipment.myPotion = inventory.inventoryPotion[itemNum];
-                    Console.WriteLine($"[{equipment.myPotion.name}]을 장비하였습니다.");
+                    if (equipment.myPotion == null)
+                    {
+                        equipment.myPotion = inventory.inventoryPotion[itemNum];
+                        inventory.inventoryPotion.RemoveAt(itemNum);
+                        Console.WriteLine($"[{equipment.myPotion.name}]을 장비하였습니다.\n");
+                    }
+                    else
+                    {
+                        inventory.inventoryPotion.Add(equipment.myPotion);
+                        equipment.myPotion = inventory.inventoryPotion[itemNum];
+                        inventory.inventoryPotion.RemoveAt(itemNum);
+                        Console.WriteLine($"[{equipment.myPotion.name}]을 장비하였습니다.\n");
+                    }
                 }
-                else
-                {
-                    inventory.inventoryPotion.Add(equipment.myPotion);
-                    equipment.myPotion= inventory.inventoryPotion[itemNum];
-                    inventory.inventoryPotion.RemoveAt(itemNum);
-                }            
+            }
+            else
+            {
+                Console.WriteLine("해당 인벤토리에 포션이 없습니다.\n");
             }
         }
         //착용중인 장비를 보여주는 메서드
         public void ShowMyEquipment()
         {
-
             Console.Clear();
-            ConsoleKeyInfo key;
             bool returnPage = true;
 
-            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         E q u i p m e n t         ◁\n△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△△\n");
+            Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         E q u i p m e n t        ◁\n△△△△△△△△△△△△△△△△△△△\n");
             for (int i = 0; i < equipment.myItem.Count; i++)
             {
                 Console.WriteLine($"[{i + 1}]번 장비 ");
@@ -1036,7 +854,6 @@ namespace ConsoleProject_2
                     Console.WriteLine($"이름 : {equipment.myItem[i].name}\n");
                 }
             }
-
 
             Console.WriteLine("[포션 주머니]");
             if (equipment.myPotion== null)
@@ -1055,13 +872,15 @@ namespace ConsoleProject_2
             Console.WriteLine("1. 장비 해제");
             Console.WriteLine("2. 포션 해제");
                 Console.WriteLine("원하는 동작을 선택하세요.");
+                Console.Write("\n▶ ");
                 switch (Read.ReadInt(0,2))
                 {
                     case 0:
                         returnPage = false;
                         break;
                     case 1:
-                        Console.WriteLine("착용을 해제를 원하는 장비 번호를 입력하세요");
+                        Console.WriteLine("착용 해제를 원하는 장비 번호를 입력하세요");
+                        Console.Write("\n▶ ");
                         UnEquipItem(Read.ReadUInt(0));
                         break;
                     case 2:
@@ -1070,18 +889,6 @@ namespace ConsoleProject_2
                 }
             }
 
-            //Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
-            //while (returnPage)
-            //{
-            //    key = Console.ReadKey(true);
-
-            //    switch (key.Key)
-            //    {
-            //        case ConsoleKey.Enter:
-            //            returnPage = false;
-            //            break;
-            //    }
-            //}
             ShowMyCharacter();
         }
 
@@ -1091,13 +898,13 @@ namespace ConsoleProject_2
             if (itemNum< inventory.inventoryItem.Count)
             {
                 inventory.inventoryItem.Add(equipment.myItem[itemNum]);
-                Console.WriteLine($"[{equipment.myItem[itemNum].name}]을 장비 해제하였습니다.");
+                Console.WriteLine($"[{equipment.myItem[itemNum].name}]을 장비 해제하였습니다.\n");
                 equipment.myItem.RemoveAt(itemNum);
                 SetTotalStatus();
             }
             else
             {
-                Console.WriteLine("해당 위치에 장비를 착용하고있지 않습니다.");
+                Console.WriteLine("해당 위치에 장비를 착용하고있지 않습니다.\n");
             }
         }
         public void UnEquipPotion()
@@ -1105,12 +912,12 @@ namespace ConsoleProject_2
             if (equipment.myPotion!=null)
             {
                 inventory.inventoryPotion.Add(equipment.myPotion);
-                Console.WriteLine($"[{equipment.myPotion.name}]을 장비 해제하였습니다.");
+                Console.WriteLine($"[{equipment.myPotion.name}]을 장비 해제하였습니다.\n");
                 equipment.myPotion = null;
             }
             else
             {
-                Console.WriteLine("해당 위치에 포션을 착용하고있지 않습니다.");
+                Console.WriteLine("포션을 착용하고있지 않습니다.\n");
             }
         }
 
@@ -1128,39 +935,43 @@ namespace ConsoleProject_2
 
             Console.Clear();
 
-            ControlPlayer();
+            //Control();
             onFront = true;
             OnVillage();
+        }
+
+        public void IncreaseExp(Monster monster)
+        {
+            exp+=monster.exp;
         }
         public void SetMaxExp()
         {
             maxExp = level * 10;
         }
+
         public void LevelUp()
         {
             bool returnPage=true;
             ConsoleKeyInfo key;
             int levelUpCount = 0;
-            if (currentExp >= maxExp)
+            if (exp >= maxExp)
             {
-                while (currentExp >= maxExp)
+                while (exp >= maxExp)
                 {
                     level++;
-                    currentExp -= maxExp;
+                    exp -= maxExp;
                     SetMaxExp();
                     statPoint += 5;
                     levelUpCount++;
                 }
-
                 Console.WriteLine($"레벨이 총 [{levelUpCount}] 상승하였습니다.");
-
             }
             else
             {
                 Console.WriteLine("경험치가 부족합니다.");
-                Console.WriteLine($"{currentExp}/{maxExp}");
+                Console.WriteLine($"{exp}/{maxExp}");
             }
-
+            Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
             while (returnPage)
             {
                 key = Console.ReadKey(true);
@@ -1173,6 +984,38 @@ namespace ConsoleProject_2
                 }
             }
             ShowMyCharacter();
+        }
+
+        public void DrawMyInformation()
+        {
+            string myHP = currentHp + " / " + myTotalStatus.hp;
+            string myAttack = ""+myTotalStatus.attack;
+            string myDefence = ""+myTotalStatus.defence;
+            Console.SetCursorPosition(2, 1);
+            Console.Write("▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽");
+            Console.SetCursorPosition(2, 2);
+            Console.Write("▷       I n f o r m a t i o n      ◁");
+            Console.SetCursorPosition(2, 3);
+            Console.Write($"▷  HP  : "+myHP);
+            DrawSpaceBar(myHP);
+            Console.SetCursorPosition(2, 4);
+            Console.Write($"▷  Att : "+myAttack);
+            DrawSpaceBar(myAttack);
+            Console.SetCursorPosition(2, 5);
+            Console.Write($"▷  Def : "+myDefence);
+            DrawSpaceBar(myDefence);
+
+
+            Console.SetCursorPosition(2, 6);
+            Console.Write("△△△△△△△△△△△△△△△△△△△");
+        }
+        public void DrawSpaceBar(string s)
+        {
+            for (int i = 0; i < 26 - s.Length; i++)
+            {
+                Console.Write(" ");
+            }
+            Console.Write("◁");
         }
     }
 }
