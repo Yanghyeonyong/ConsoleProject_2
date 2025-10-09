@@ -81,6 +81,10 @@ namespace ConsoleProject_2
         int maxExp;
         public int currentExp;
         int statPoint;
+
+        int currentStage;
+
+        bool onStart = false;
         public Player(bool test)
         {
         }
@@ -191,26 +195,45 @@ namespace ConsoleProject_2
                                     }
                                     break;
                                 case ConsoleKey.Spacebar:
-                                    if (Map.shopPortal[pos.x, pos.y])
+                                    if (onVillage)
                                     {
-                                        onVillage = false;
-                                        onAdventure = false;
-                                        OnShop();
+                                        if (Map.shopPortal[pos.x, pos.y])
+                                        {
+                                            onVillage = false;
+                                            onAdventure = false;
+                                            OnShop();
+                                        }
+                                        if (Map.adventurePortal_Stage1[pos.x, pos.y]&&currentStage==0)
+                                        {
+                                            OnAdventure();
+                                            //currentStage = 1;
+                                            //Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
+                                            Console.WriteLine("dkkkkkkkkkkkkkkkkkk현재 curentStage = " + currentStage);
+                                        }
+                                        if (Map.homePortal[pos.x, pos.y])
+                                        {
+                                            onVillage = false;
+                                            onAdventure = false;
+                                            ShowMyCharacter();
+                                        }
                                     }
-                                    if (Map.adventurePortal[pos.x, pos.y])
+                                    if (onAdventure)
                                     {
-                                        OnAdventure();
-                                        //Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
-                                    }
-                                    if (Map.homePortal[pos.x, pos.y])
-                                    {
-                                        onVillage = false;
-                                        onAdventure = false;
-                                        ShowMyCharacter();
-                                    }
-                                    if (Map.villagePortal[pos.x, pos.y])
-                                    {
-                                        OnVillage();
+                                        if (Map.villagePortal[pos.x, pos.y])
+                                        {
+                                            OnVillage();
+                                        }
+                                        if (Map.adventurePortal_Stage2[pos.x, pos.y] && currentStage == 1)
+                                        {
+                                            //currentStage = 2;
+                                            OnAdventure2();
+                                            //Console.WriteLine("이동했다ㅏㅏㅏㅏㅏ");
+                                        }
+                                        if (Map.adventurePortal_Stage3[pos.x, pos.y] && currentStage == 2)
+                                        {
+                                            //currentStage = 3;
+                                            OnAdventure3();
+                                        }
                                     }
                                     break;
                             }
@@ -220,7 +243,7 @@ namespace ConsoleProject_2
                     {
                         if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]&&gravity.ElapsedTicks%5000==0)
                         {
-                            Move(Direction.down);
+                            MoveDown();
                             gravity.Restart();
                             //여기다가 몬스터 일정 시간마다 움직이는 코드 넣어도 될 듯?
                         }
@@ -290,6 +313,22 @@ namespace ConsoleProject_2
                 {
                     Console.Write(Map.adventureMap[pos.x + i, pos.y+1]);
                 }
+                if (currentStage == 1)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        Console.SetCursorPosition(Map.BaseMap.GetLength(0) - 30, 9 + i);
+                        Console.Write(Map.NextStage[i]);
+                    }
+                }
+                if (currentStage == 2)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        Console.SetCursorPosition(170, 54 + i);
+                        Console.Write(Map.NextStage[i]);
+                    }
+                }
             }
 
             switch (dir)
@@ -313,21 +352,42 @@ namespace ConsoleProject_2
         public void MoveLeft()
         {
             //특수문자라 -2다 일반이면 -1로 바꿔야 한다
-            if (!Map.BaseMap[pos.x - 2, pos.y])
+            if (!Map.BaseMap[pos.x - 2, pos.y] 
+                && !Map.MonsterMap[Math.Max(0,pos.x - 8), pos.y+1] 
+                && !Map.MonsterMap[Math.Max(0, pos.x - 8), pos.y] 
+                && !Map.MonsterMap[Math.Max(0, pos.x - 8), pos.y-1])
             {
                 Move(Direction.left);
             }
         }
         public void MoveRight()
         {
-            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y])
+            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y] 
+                && !Map.MonsterMap[Math.Max(0, pos.x) + playerImage[1].Length+1, pos.y + 1] 
+                && !Map.MonsterMap[Math.Max(0, pos.x) + playerImage[1].Length + 1, pos.y] 
+                && !Map.MonsterMap[Math.Max(0, pos.x) + playerImage[1].Length + 1, pos.y - 1])
             {
                 Move(Direction.right);
             }
         }
         public void MoveUp()
         {
-            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1])
+            if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x-7), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x-6), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x-5), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x-4), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x-3), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x-2), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x-1), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x+1), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x+2), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x+3), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x+4), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x+5), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x+6), pos.y - playerImage.Length + 1]
+                && !Map.MonsterMap[Math.Max(0, pos.x+7), pos.y - playerImage.Length + 1])
             {
                 Move(Direction.up);
             }
@@ -335,9 +395,23 @@ namespace ConsoleProject_2
         }
         public void MoveDown()
         {
-            //왜 이런 값이 나올까 생각해봤는제 pos는 플레이어의 좌측 상단 좌표
-            // pos.y+playerImage+1이 아닌 이유는 애초에 내가 아랫줄 맵은 baseMap.GetLength(1)-1d으로 받아놔서 그런거 같음
-            if (!Map.BaseMap[pos.x, pos.y + playerImage.Length])
+            if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x - 7), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x - 6), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x - 5), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x - 4), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x - 3), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x - 2), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x - 1), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x + 1), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x + 2), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x + 3), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x + 4), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x + 5), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x + 6), pos.y + playerImage.Length]
+                && !Map.MonsterMap[Math.Max(0, pos.x + 7), pos.y + playerImage.Length]
+                )
             {
                 Move(Direction.down);
             }
@@ -393,9 +467,9 @@ namespace ConsoleProject_2
                 {
                     Map.AttackMap[rear, pos.y + j] = true;
 
-                    if ((Map.AttackMap[rear, pos.y + j] && Map.MonsterMap[rear, pos.y + j]))
+                    if ((Map.AttackMap[rear, pos.y + j] && Map.MonsterMap[rear-7, pos.y + j]))
                     {
-                        GameSystem.AttackMonster(rear, pos.y + j);
+                        GameSystem.AttackMonster(rear - 7, pos.y + j);
                         check = true;
                         break;
                     }
@@ -410,205 +484,8 @@ namespace ConsoleProject_2
                     break;
                 }
             }
-
-            //일단 지금 단계에서는 전방, 후방 공격으로 충분하다
-            #region 상단 하단
-            //int top = 0;
-            ////상단 공격
-            //for (int i = 1; i < topRangeY; i++)
-            //{
-            //    top = pos.y - i;
-            //    if (top <= 1)
-            //    {
-            //        break;
-            //    }
-            //    for (int j = 0; j < playerImage[1].Length; j++)
-            //    {
-            //        //Map.AttackMap[pos.x + j, top] = true;
-            //        Console.SetCursorPosition(pos.x + j, top);
-            //        Console.Write("c");
-
-            //        if ((Map.AttackMap[pos.x + j, top] && Map.MonsterMap[pos.x + j, top]))
-            //        {
-            //            GameSystem.AttackMonster(rear, pos.y + j);
-            //            check = true;
-            //            break;
-            //        }
-            //    }
-            //    if (check)
-            //    {
-            //        break;
-            //    }
-            //}
-
-            //    int bottom = 0;
-            //for (int i = 0; i < bottomRangeY; i++)
-            //{
-            //    bottom = pos.y + playerImage.Length + i;
-            //    if (top <= 1)
-            //    {
-            //        break;
-            //    }
-            //    for (int j = 0; j < playerImage[1].Length; j++)
-            //    {
-            //        Map.AttackMap[pos.x + j, bottom] = true;
-            //        Console.SetCursorPosition(pos.x + j, bottom);
-            //        Console.Write("c");
-
-            //        if ((Map.AttackMap[pos.x + j, bottom] && Map.MonsterMap[pos.x + j, bottom]))
-            //        {
-            //            GameSystem.AttackMonster(rear, pos.y + j);
-            //            check = true;
-            //            break;
-            //        }
-            //    }
-            //    if (check)
-            //    {
-            //        break;
-            //    }
-            //}
-            #endregion
-
         }
 
-   
-        //public void SetAttackMap(int x, int y)
-        //{
-        //    BackgroundWorker attack = new BackgroundWorker();
-        //    attack.DoWork += (sender, e) =>
-        //    {
-        //        Map.AttackMap[x,y] = true;
-        //        Console.SetCursorPosition(x,y);
-        //        Console.Write("c");
-        //        Thread.Sleep(500);
-        //        Map.AttackMap[x, y] = false;
-        //        Console.SetCursorPosition(x, y);
-        //        if (onAdventure)
-        //        {
-        //            Console.Write(Map.adventureMap[x, y]);
-        //        }
-
-        //    };
-        //    attack.RunWorkerCompleted += (sender, e) =>
-        //    {
-        //        attack = null;
-        //    };
-        //    attack.RunWorkerAsync();
-        //}
-
-
-
-        //public void Attack(int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY)
-        //{
-
-
-        //    SetAttackMap(pos, forwardRangeX, rearRangeX, topRangeY, bottomRangeY, 1);
-        //}
-        //public void SetAttack(int x, int y, List<int> attackRangeX, List<int> attackRangeY)
-        //{
-        //    Map.AttackMap[x, y] = true;
-        //    attackRangeX.Add(x);
-        //    attackRangeY.Add(y);
-        //    Console.SetCursorPosition(x, y);
-        //    Console.Write("c");
-        //    if (Map.AttackMap[x, y] && Map.MonsterMap[x, y])
-        //    {
-        //        Console.WriteLine("몬스터 공겨어어어억");
-        //        GameSystem.AttackMonster(x,y);
-        //        //Map.MonsterMap[x, y] = false;
-        //    }
-        //}
-
-        ////이거 호출하면 해당 좌표가 true로 바뀌고 지속시간 끝나면 다시 false로 바뀐다
-        ////이거도 시간 나면 통합 예정
-        //public void SetAttackMap(MyPos pos, int forwardRangeX, int rearRangeX, int topRangeY, int bottomRangeY, int duration)
-        //{
-        //    BackgroundWorker attack = new BackgroundWorker();
-        //    attack.DoWork += (sender, e) =>
-        //    {
-        //        int attackX;
-        //        int attackY;
-        //        List<int> attackRangeX = new List<int>();
-        //        List<int> attackRangeY = new List<int>();
-        //        for (int i = 1; i <= forwardRangeX; i++)
-        //        {
-        //            attackX = pos.x + playerImage[1].Length + i;
-        //            attackY = pos.y;
-        //            if (attackX < 200)
-        //            {
-        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-        //                SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-        //        for (int i = 1; i <= rearRangeX; i++)
-        //        {
-        //            attackX = pos.x - i;
-        //            attackY = pos.y;
-        //            if (attackX >= 0)
-        //            {
-        //                SetAttack(attackX, attackY, attackRangeX, attackRangeY);
-        //                SetAttack(attackX, attackY + 1, attackRangeX, attackRangeY);
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-        //        for (int i = 1; i <= topRangeY; i++)
-        //        {
-        //            attackX = pos.x;
-        //            attackY = pos.y - i;
-        //            if (attackY >= 0)
-        //            {
-        //                for (int j = 0; j < playerImage[1].Length + 1; j++)
-        //                {
-        //                    SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-        //        for (int i = 1; i <= bottomRangeY; i++)
-        //        {
-        //            attackX = pos.x;
-        //            attackY = pos.y + i + playerImage.Length - 1;
-        //            if (attackY <= 60)
-        //            {
-
-        //                for (int j = 0; j < playerImage[1].Length + 1; j++)
-        //                {
-        //                    SetAttack(attackX + j, attackY, attackRangeX, attackRangeY);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                break;
-        //            }
-        //        }
-
-        //        Thread.Sleep(duration * 1000);
-
-        //        for (int i = 0; i < attackRangeX.Count; i++)
-        //        {
-        //            Console.SetCursorPosition(attackRangeX[i], attackRangeY[i]);
-        //            Console.Write(" ");
-        //            Map.AttackMap[attackRangeX[i], attackRangeY[i]] = false;
-        //        }
-        //        attackRangeX = null;
-        //        attackRangeY = null;
-        //    };
-        //    attack.RunWorkerCompleted += (sender, e) =>
-        //    {
-        //        attack = null;
-        //    };
-        //    attack.RunWorkerAsync();
-        //}
         #endregion
 
         #region 캐릭터 초기 설정
@@ -874,18 +751,21 @@ namespace ConsoleProject_2
         //마을로 이동하는 메서드
         public void OnVillage()
         {
+            currentStage = 0;
             onVillage = true;
             Map.InitBaseMap();
 
-            Map.MakePortal(0, 65, 25, 31, Map.adventurePortal);
+            Map.MakePortal(0, 65, 25, 31, Map.adventurePortal_Stage1);
             Map.MakePortal(147, 182, 28, 34, Map.shopPortal);
             Map.MakePortal(81, 116, 52, 58, Map.homePortal);
-            Map.MakePortal(0, 20, 49, 59,Map.villagePortal);
+            Map.MakePortal(0, 32, 54, 59,Map.villagePortal);
 
             GameSystem.NewMapMonster();
 
             //Console.Clear();
             Map.DrawVillageMap();
+            pos.x = 100;
+            pos.y = 30;
             SetCharacterPos(playerImage);
 
             //일단 테스트용이라 현재는 true로 둔거고
@@ -895,7 +775,7 @@ namespace ConsoleProject_2
             //Gravity();
 
             //일단 지금 true로 설정해도 나중에 벽에 닿으면 false로 바뀜
-            onJump = true;
+            //onJump = true;
         }
 
         //모험으로 이동
@@ -906,6 +786,37 @@ namespace ConsoleProject_2
             Map.DrawAdventureMap();
             Map.InitBaseMapStage1();
             Map.DrawBaseMap();
+            currentStage = 1;
+
+            Map.SetPlayerMap(pos.x, pos.y);
+            pos.x = 40;
+            pos.y = 57;
+            SetCharacterPos(playerImage);
+        }
+        public void OnAdventure2()
+        {
+            Map.DrawAdventureMap();
+            Map.InitBaseMapStage2();
+            Map.DrawBaseMap();
+            currentStage = 2;
+
+            Map.SetPlayerMap(pos.x, pos.y);
+            pos.x = 40;
+            pos.y = 57;
+            SetCharacterPos(playerImage);
+        }
+        public void OnAdventure3()
+        {
+            onVillage=false;
+            onAdventure=true;
+            Map.DrawAdventureMap();
+            Map.InitBaseMapStage3();
+            Map.DrawBaseMap();
+            currentStage = 3;
+
+            Map.SetPlayerMap(pos.x, pos.y);
+            pos.x = 40;
+            pos.y = 57;
             SetCharacterPos(playerImage);
         }
 
@@ -1044,18 +955,6 @@ namespace ConsoleProject_2
                         break;
                 }
             }
-            //Console.WriteLine("\nEnter키 입력시 캐릭터 정보 화면으로 복귀합니다.");
-            //while (returnPage)
-            //{
-            //    key = Console.ReadKey(true);
-
-            //    switch (key.Key)
-            //    {
-            //        case ConsoleKey.Enter:
-            //            returnPage = false;
-            //            break;
-            //    }
-            //}
             ShowMyCharacter();
         }
 

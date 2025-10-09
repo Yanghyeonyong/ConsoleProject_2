@@ -26,6 +26,11 @@ namespace ConsoleProject_2
         public static char[,] villageMap;
         public static char[,] adventureMap;
 
+        static string[] nextStage;
+        public static string[] NextStage
+        {
+            get { return nextStage; }
+        }
         public static void SetMap()
         {
             #region villageMap
@@ -168,12 +173,13 @@ namespace ConsoleProject_2
     "%%%%%%@%%###++%***+:                                                                                                                                                                      .+*##-=*#%%@@" +
     "%%%%%%@%%#*++=*#+#+:                                                                                                                                                                      .++##+=++#@@@" +
     "%%%%%%@%%%**+*+#*#*:                                                                                                                                                                      :+*###***#%@@" +
-    "%%%@%%@%%##+**##*#=-.                                                                                                                                                                     :*%#*#++#%%@@" +
-    "@@%%%@@%%#*#%%#*+%+=.                                                                                                                                                                     :*+#*#**#%%@@" +
-    "%%%%%%@@%##%%%**+%+=.                                                                                                                                                                    .-+*###*##%%@@" +
-    "%%%%%%@@%%%%#*#**#*=.                                                                                                                                                                    .+*#%##+*#%%@@" +
-    "%%%%%%@@@%%#**##*#*=.                                                                                                                                                                  .=+**#%##**#%%@@" +
-    "%%%%%%@@@%#%%%##*#+=.                                                                                                                                                                  -=*+*#%##%##%@@@";
+    "%__     ___ _ _                                                                                                                                                                           :*%#*#++#%%@@" +
+    "@\\ \\   / (_) | | __ _  __ _  ___                                                                                                                                                          :*+#*#**#%%@@" +
+    "% \\ \\ / /| | | |/ _` |/ _` |/ _ \\                                                                                                                                                        .-+*###*##%%@@" +
+    "%  \\ V / | | | | (_| | (_| |  __/                                                                                                                                                        .+*#%##+*#%%@@" +
+    "%   \\_/  |_|_|_|\\__,_|\\__, |\\___|                                                                                                                                                       .=+**#%##**#%%@@" +
+    "%                     |___/                                                                                                                                                             -=*+*#%##%##%@@@";
+
             x = y = 0;
             check = "";
             for (int i = 0; i < adventureMapImage.Length; i++)
@@ -201,19 +207,12 @@ namespace ConsoleProject_2
                     break;
             }
 
-
-
-            //for (int i = 0; i < 59; i++)
-            //{
-            //    for (int j = 0; j < 199; j++)
-            //    {
-            //        Console.Write(adventureMap[j, i]);
-
-            //    }
-            //    if (i + 1 != adventureMap.GetLength(1))
-            //        Console.WriteLine();
-            //}
             #endregion
+            nextStage[0] = " _   _ _______  _______ ";
+            nextStage[1] = "| \\ | | ____\\ \\/ /_   _|";
+            nextStage[2] = "|  \\| |  _|  \\  /  | |  ";
+            nextStage[3] = "| |\\  | |___ /  \\  | |  ";
+            nextStage[4] = "|_| \\_|_____/_/\\_\\ |_|  ";
         }
 
         //플레이어와 몬스터의 위치를 추적하여 충돌을 확인하기 위해 사용
@@ -247,7 +246,9 @@ namespace ConsoleProject_2
 
         public static bool[,] homePortal;
         public static bool[,] villagePortal;
-        public static bool[,] adventurePortal;
+        public static bool[,] adventurePortal_Stage1;
+        public static bool[,] adventurePortal_Stage2;
+        public static bool[,] adventurePortal_Stage3;
         public static bool[,] shopPortal;
 
         public static void InitMap(int width, int height)
@@ -264,11 +265,15 @@ namespace ConsoleProject_2
 
             homePortal = new bool[width, height];
             villagePortal = new bool[width, height];
-            adventurePortal = new bool[width, height];
+            adventurePortal_Stage1 = new bool[width, height];
+            adventurePortal_Stage2 = new bool[width, height];
+            adventurePortal_Stage3 = new bool[width, height];
             shopPortal = new bool[width, height];
 
             villageMap = new char[width, height];
             adventureMap = new char[width, height];
+
+            nextStage = new string[5];
         }
 
         public static void InitBaseMap()
@@ -284,21 +289,11 @@ namespace ConsoleProject_2
                 baseMap[i, 0] = true;
                 baseMap[i, baseMap.GetLength(1) - 1] = true;
             }
-
-            //for (int i = 0; i < baseMap.GetLength(1); i++)
-            //{
-            //    for (int j = 0; j < baseMap.GetLength(0)-1; j+=2)
-            //    {
-            //        if (baseMap[j, i])
-            //        {
-            //            Console.SetCursorPosition(j, i);
-            //            Console.Write("■");
-            //        }
-            //    }
-            //}
         }
         public static void InitBaseMapStage1()
         {
+
+            GameSystem.RemoveMonster();
             for (int i = 0; i < baseMap.GetLength(0); i++)
             {
                 for (int j = 0; j < baseMap.GetLength(1); j++)
@@ -340,9 +335,25 @@ namespace ConsoleProject_2
             GameSystem.GenerateMonster(150, 27);
             GameSystem.GenerateMonster(160, 27);
             GameSystem.GenerateMonster(170, 27);
+
+            for (int i = baseMap.GetLength(0) - 30; i < baseMap.GetLength(0)-4; i++)
+            {
+                adventurePortal_Stage2[i, 13] = true;
+                adventurePortal_Stage2[i, 12] = true;
+                adventurePortal_Stage2[i, 11] = true;
+                adventurePortal_Stage2[i, 10] = true;
+                adventurePortal_Stage2[i, 9] = true;
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                Console.SetCursorPosition(baseMap.GetLength(0) - 30, 9+i);
+                Console.Write(nextStage[i]);
+            }
         }
         public static void InitBaseMapStage2()
         {
+            GameSystem.RemoveMonster();
+
             for (int i = 0; i < baseMap.GetLength(0); i++)
             {
                 for (int j = 0; j < baseMap.GetLength(1); j++)
@@ -378,7 +389,6 @@ namespace ConsoleProject_2
                 baseMap[i, 14] = true;
             }
 
-
             GameSystem.GenerateMonster(80, 42);
             GameSystem.GenerateMonster(100, 42);
             GameSystem.GenerateMonster(120, 42);
@@ -389,9 +399,24 @@ namespace ConsoleProject_2
             GameSystem.GenerateMonster(170, 27);
             GameSystem.GenerateMonster(90, 12);
             GameSystem.GenerateMonster(110, 12);
+
+            for (int i = 170; i < 196; i++)
+            {
+                adventurePortal_Stage3[i, 54] = true;
+                adventurePortal_Stage3[i, 55] = true;
+                adventurePortal_Stage3[i, 56] = true;
+                adventurePortal_Stage3[i, 57] = true;
+                adventurePortal_Stage3[i, 58] = true;
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                Console.SetCursorPosition(170,54 + i);
+                Console.Write(nextStage[i]);
+            }
         }
         public static void InitBaseMapStage3()
         {
+            GameSystem.RemoveMonster();
             for (int i = 0; i < baseMap.GetLength(0); i++)
             {
                 for (int j = 0; j < baseMap.GetLength(1); j++)
@@ -402,7 +427,7 @@ namespace ConsoleProject_2
 
             InitBaseMap();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 30; i < 100; i++)
             {
                 baseMap[i, 46] = true;
                 baseMap[i, 45] = true;
@@ -446,22 +471,28 @@ namespace ConsoleProject_2
             //true인 경우 false <- 이동 시작점이라 지나쳤으므로 false로 변환
             if (monsterMap[x, y])
             {
-                monsterMap[x, y] = false;
+               monsterMap[x, y] = false;
             }
             //false인 경우 true <- 도착점이므로 true로 변환
             else
             {
                 monsterMap[x, y] = true;
+
+
+                        
+                        //몬스터와 플레이어가 충돌 시
+                        if (monsterMap[x, y] && playerMap[x, y])
+                        {
+                            //monsterMap[x, y] = false;
+                            //발생할 코드 작성 예정
+                            //몬스터가 들이 박은거니 플레이어한테 부정적 영향
+                            Console.Write("충돌 발생:Monster");
+
+                        }
+
             }
 
-            //몬스터와 플레이어가 충돌 시
-            if (monsterMap[x, y] && playerMap[x, y])
-            {
-                //monsterMap[x, y] = false;
-                //발생할 코드 작성 예정
-                //몬스터가 들이 박은거니 플레이어한테 부정적 영향
-                Console.Write("충돌 발생:Monster");
-            }
+
         }
         public static void SetPlayerMap(int x, int y)
         {
@@ -495,9 +526,17 @@ namespace ConsoleProject_2
                             //플레이어가 들이 박은거니 몬스터한테 부정적 영향
 
                             //해당 문자열 출력 확인 -> 충돌 기능 정상 작동
-                            Console.Write("충돌 발생:Player");
+                            //Console.Write($"충돌 발생:Player ");
                         }
                     }
+                }
+                if (monsterMap[x, y] && playerMap[x, y])
+                {
+                    //발생할 코드 작성 예정
+                    //플레이어가 들이 박은거니 몬스터한테 부정적 영향
+
+                    //해당 문자열 출력 확인 -> 충돌 기능 정상 작동
+                    Console.Write($"충돌 발생:Player {x}, {y}");
                 }
                 //playerMap[x, y] = true;
             }
@@ -641,14 +680,14 @@ namespace ConsoleProject_2
     "%%%%%%@%%###++%***+:                                                                                                                                                                      .+*##-=*#%%@@\r\n" +
     "%%%%%%@%%#*++=*#+#+:                                                                                                                                                                      .++##+=++#@@@\r\n" +
     "%%%%%%@%%%**+*+#*#*:                                                                                                                                                                      :+*###***#%@@\r\n" +
-    "%%%@%%@%%##+**##*#=-.                                                                                                                                                                     :*%#*#++#%%@@\r\n" +
-    "@@%%%@@%%#*#%%#*+%+=.                                                                                                                                                                     :*+#*#**#%%@@\r\n" +
-    "%%%%%%@@%##%%%**+%+=.                                                                                                                                                                    .-+*###*##%%@@\r\n" +
-    "%%%%%%@@%%%%#*#**#*=.                                                                                                                                                                    .+*#%##+*#%%@@\r\n" +
-    "%%%%%%@@@%%#**##*#*=.                                                                                                                                                                  .=+**#%##**#%%@@\r\n" +
-    "%%%%%%@@@%#%%%##*#+=.                                                                                                                                                                  -=*+*#%##%##%@@@\r\n");
-            //DrawBaseMap();
-            //GameSystem.GenerateMonster();
+    "%__     ___ _ _                                                                                                                                                                            :*%#*#++#%%@@\r\n" +
+    "@\\ \\   / (_) | | __ _  __ _  ___                                                                                                                                                           :*+#*#**#%%@@\r\n" +
+    "% \\ \\ / /| | | |/ _` |/ _` |/ _ \\                                                                                                                                                         .-+*###*##%%@@\r\n" +
+    "%  \\ V / | | | | (_| | (_| |  __/                                                                                                                                                         .+*#%##+*#%%@@\r\n" +
+    "%   \\_/  |_|_|_|\\__,_|\\__, |\\___|                                                                                                                                                       .=+**#%##**#%%@@\r\n" +
+    "%                     |___/                                                                                                                                                             -=*+*#%##%##%@@@\r\n");
+            Map.MakePortal(0, 20, 49, 59, Map.villagePortal);
+
         }
     }
 }

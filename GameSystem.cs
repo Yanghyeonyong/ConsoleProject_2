@@ -65,15 +65,26 @@ namespace ConsoleProject_2
                 monsterPos[x * 200 + y * 60] = null;
                 Map.MonsterMap[x, y] = false;
             }
-            else 
+            else
             {
+
                 //monsterPos[x * 200 + y * 60].SetMonsterPos(Monster.playerImage);
                 Console.SetCursorPosition(x,y);
-                //Console.WriteLine("출력할게");
                 Console.Write(monsterPos[x * 200 + y * 60].playerImage[0]);
                 Console.SetCursorPosition(x, y+1);
                 Console.Write(monsterPos[x * 200 + y * 60].playerImage[1]);
             }
+        }
+        public static void RemoveMonster()
+        {
+            for (int i = 0; i < Map.MonsterMap.GetLength(0); i++)
+            {
+                for (int j = 0; j < Map.MonsterMap.GetLength(1); j++)
+                {
+                    Map.MonsterMap[i, j] = false;
+                }
+            }
+            monsterPos.Clear();
         }
     }
 }
