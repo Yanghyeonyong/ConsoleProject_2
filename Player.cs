@@ -46,7 +46,6 @@ namespace ConsoleProject_2
         //경험치 및 레벨
         int level;
         int maxExp;
-        int exp;
         int statPoint;
 
 
@@ -162,7 +161,7 @@ namespace ConsoleProject_2
         }
 
 
-        public void MoveLeft()
+        public override void MoveLeft()
         {
             if (!Map.BaseMap[pos.x - 2, pos.y] 
                 && EnableMoveRangeY(Math.Max(0, pos.x - 7),pos.y))
@@ -183,7 +182,7 @@ namespace ConsoleProject_2
                 }
             }
         }
-        public void MoveRight()
+        public override void MoveRight()
         {
             if (!Map.BaseMap[pos.x + playerImage[1].Length + 1 , pos.y] 
                 && EnableMoveRangeY(Math.Max(0, pos.x) + playerImage[1].Length-1, pos.y))
@@ -203,7 +202,7 @@ namespace ConsoleProject_2
                 }
             }
         }
-        public void MoveUp()
+        public override void MoveUp()
         {
             if (!Map.BaseMap[pos.x, pos.y - playerImage.Length + 1]&&EnableMoveRangeX(pos.x, pos.y - playerImage.Length+1))
             {
@@ -211,7 +210,7 @@ namespace ConsoleProject_2
             }
 
         }
-        public void MoveDown()
+        public override void MoveDown()
         {
             if (!Map.BaseMap[pos.x, pos.y + playerImage.Length]
                 &&EnableMoveRangeX(pos.x, pos.y + playerImage.Length))
@@ -310,7 +309,7 @@ namespace ConsoleProject_2
             }
         }
 
-        public void Die()
+        public override void Die()
         {
             GameSystem.monsterMove = null;
             currentHp=myTotalStatus.hp;
@@ -728,7 +727,6 @@ namespace ConsoleProject_2
         public void ShowMyInventory()
         {
             Console.Clear();
-            ConsoleKeyInfo key;
             bool returnPage = true;
 
             Console.WriteLine($"\n▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n▷         I n v e n t o r y         ◁\n△△△△△△△△△△△△△△△△△△△\n");
@@ -940,7 +938,7 @@ namespace ConsoleProject_2
             OnVillage();
         }
 
-        public void IncreaseExp(Monster monster)
+        public void IncreaseExp(Computer monster)
         {
             exp+=monster.exp;
         }

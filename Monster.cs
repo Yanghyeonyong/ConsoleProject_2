@@ -8,13 +8,12 @@ namespace ConsoleProject_2
 {
     enum EnemyType
     { normal, boss }
-    internal class Monster : Computer
+    internal class Monster : Mob
     {
         static Random randomDir = new Random();
         Direction dir;
         EnemyType enemyType;
 
-        public int exp;
         bool isAttack=false;
         public Monster()
         {
@@ -60,7 +59,103 @@ namespace ConsoleProject_2
 
         }
 
-        public void BossMonster(int x, int y)
+
+        public void SetMonsterPos(string[] s)
+        {
+            isAttack=Map.SetMonsterMap(pos.x, pos.y);
+            //Map.SetMonsterMap(pos.x, pos.y);
+            Console.SetCursorPosition(pos.x, pos.y);
+            Console.Write(s[0]);
+            Console.SetCursorPosition(pos.x, pos.y + 1);
+            Console.Write(s[1]);
+            Map.monsterAttackMap[pos.x, pos.y] = true;
+
+            if (isAttack)
+            {
+                GameSystem.AttackPlayer(myBaseStatus.attack);
+                isAttack = false;
+            }
+        }
+
+        public override void RandomMove()
+        {
+            dir = (Direction)randomDir.Next(2);
+            Move(dir);
+        }
+        public void Move(Direction dir)
+        {
+            Map.SetMonsterMap(pos.x, pos.y);
+            Console.SetCursorPosition(pos.x, pos.y);
+            for (int i = 0; i < 8; i++)
+            {
+                Console.Write(Map.adventureMap[pos.x + i, pos.y]);
+            }
+            Console.SetCursorPosition(pos.x, pos.y + 1);
+            for (int i = 0; i < 8; i++)
+            {
+                Console.Write(Map.adventureMap[pos.x + i, pos.y + 1]);
+            }
+
+
+
+            switch (dir)
+            {
+                case Direction.left:
+                    pos.x--;
+                    break;
+                case Direction.right:
+                    pos.x++;
+                    break;
+            }
+            SetMonsterPos(playerImage);
+        }
+
+        public override void MoveLeft()
+        {
+            //특수문자라 -2다 일반이면 -1로 바꿔야 한다
+            if (!Map.BaseMap[pos.x - 2, pos.y])
+            {
+                Move(Direction.left);
+            }
+        }
+        public override void MoveRight()
+        {
+            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y])
+            {
+                Move(Direction.right);
+            }
+        }
+
+        public override void Die()
+        {
+            for (int i = 0; i < playerImage.Length; i++)
+            {
+                for (int j = 0; j < playerImage[0].Length;j++)
+                {
+                    Map.monsterAttackMap[pos.x + j, pos.y + i] = false;
+                }
+            }
+            Map.SetMonsterMap(pos.x, pos.y);
+
+            Console.SetCursorPosition(pos.x, pos.y);
+            for (int i = 0; i < 8; i++)
+            {
+                Console.Write(Map.adventureMap[pos.x + i, pos.y]);
+            }
+            Console.SetCursorPosition(pos.x, pos.y + 1);
+            for (int i = 0; i < 8; i++)
+            {
+                Console.Write(Map.adventureMap[pos.x + i, pos.y + 1]);
+            }
+        }
+    }
+
+    class BossMonster : Mob
+    {
+        static Random randomDir = new Random();
+        Direction dir;
+        EnemyType enemyType;
+        public BossMonster(int x, int y)
         {
             playerImage = new string[30];
             //보스(1페)
@@ -179,94 +274,6 @@ namespace ConsoleProject_2
             {
                 Console.SetCursorPosition(pos.x, pos.y + i);
                 Console.Write(s[i]);
-            }
-        }
-        public void SetMonsterPos(string[] s)
-        {
-            isAttack=Map.SetMonsterMap(pos.x, pos.y);
-            //Map.SetMonsterMap(pos.x, pos.y);
-            Console.SetCursorPosition(pos.x, pos.y);
-            Console.Write(s[0]);
-            Console.SetCursorPosition(pos.x, pos.y + 1);
-            Console.Write(s[1]);
-            Map.monsterAttackMap[pos.x, pos.y] = true;
-
-            if (isAttack)
-            {
-                GameSystem.AttackPlayer(myBaseStatus.attack);
-                isAttack = false;
-            }
-        }
-
-        public void RandomMove()
-        {
-            dir = (Direction)randomDir.Next(2);
-            Move(dir);
-        }
-        public void Move(Direction dir)
-        {
-            Map.SetMonsterMap(pos.x, pos.y);
-            Console.SetCursorPosition(pos.x, pos.y);
-            for (int i = 0; i < 8; i++)
-            {
-                Console.Write(Map.adventureMap[pos.x + i, pos.y]);
-            }
-            Console.SetCursorPosition(pos.x, pos.y + 1);
-            for (int i = 0; i < 8; i++)
-            {
-                Console.Write(Map.adventureMap[pos.x + i, pos.y + 1]);
-            }
-
-
-
-            switch (dir)
-            {
-                case Direction.left:
-                    pos.x--;
-                    break;
-                case Direction.right:
-                    pos.x++;
-                    break;
-            }
-            SetMonsterPos(playerImage);
-        }
-
-        public void MoveLeft()
-        {
-            //특수문자라 -2다 일반이면 -1로 바꿔야 한다
-            if (!Map.BaseMap[pos.x - 2, pos.y])
-            {
-                Move(Direction.left);
-            }
-        }
-        public void MoveRight()
-        {
-            if (!Map.BaseMap[pos.x + playerImage[1].Length + 1, pos.y])
-            {
-                Move(Direction.right);
-            }
-        }
-
-        public void Die()
-        {
-            for (int i = 0; i < playerImage.Length; i++)
-            {
-                for (int j = 0; j < playerImage[0].Length;j++)
-                {
-                    Map.monsterAttackMap[pos.x + j, pos.y + i] = false;
-                }
-            }
-            Map.SetMonsterMap(pos.x, pos.y);
-
-            Console.SetCursorPosition(pos.x, pos.y);
-            for (int i = 0; i < 8; i++)
-            {
-                Console.Write(Map.adventureMap[pos.x + i, pos.y]);
-            }
-            Console.SetCursorPosition(pos.x, pos.y + 1);
-            for (int i = 0; i < 8; i++)
-            {
-                Console.Write(Map.adventureMap[pos.x + i, pos.y + 1]);
             }
         }
     }

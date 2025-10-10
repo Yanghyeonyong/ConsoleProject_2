@@ -12,14 +12,14 @@ namespace ConsoleProject_2
     static class GameSystem
     {
         static Player player;
-        public static Dictionary<int, Monster> monsterPos;
+        public static Dictionary<int, Mob> monsterPos;
         public static Action monsterMove=null;
         public static bool attackByMonster=false;
 
         static public void OnStart()
         {
             player = new Player();
-            monsterPos = new Dictionary<int, Monster>();
+            monsterPos = new Dictionary<int, Mob>();
             Control();
             player.onGame();
         }
@@ -27,11 +27,11 @@ namespace ConsoleProject_2
         {
             monsterMove = null;
             monsterPos = null;
-            monsterPos = new Dictionary<int, Monster>();
+            monsterPos = new Dictionary<int, Mob>();
         }
         static public void GenerateMonster()
         {
-            Monster monster = new Monster();    
+            Mob monster = new Monster();    
             //딕셔너리에 저장한 다음에 이후 검색
             monsterPos.Add(monster.pos.x * 200 + monster.pos.y * 60, monster);
             monsterMove += monster.RandomMove;
@@ -48,8 +48,7 @@ namespace ConsoleProject_2
         }
         static public void GenerateBossMonster(int x, int y)
         {
-            Monster monster = new Monster(x, y);  
-            monster.BossMonster(x, y);
+            Mob monster = new BossMonster(x, y);  
             
             //딕셔너리에 저장한 다음에 이후 검색
             monsterPos.Add(monster.pos.x * 200 + monster.pos.y * 60, monster);
@@ -57,7 +56,7 @@ namespace ConsoleProject_2
 
         static public void ChangePos(int currentX, int currentY, int moveX, int moveY)
         {
-            Monster valueMonster = monsterPos[currentX*200+currentY*60];
+            Mob valueMonster = monsterPos[currentX*200+currentY*60];
             monsterPos.Remove(currentX * 200 + currentY * 60);
             monsterPos[(currentX+moveX)*200 + (currentY+moveY)*60] = valueMonster;
         }

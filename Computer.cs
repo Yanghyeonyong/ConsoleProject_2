@@ -29,5 +29,34 @@ namespace ConsoleProject_2
         public MyPos pos;
         //해당 캐릭터의 기본 스탯
         public Status myBaseStatus;
+
+        public int exp;
+
+        public virtual void Die()
+        {
+            Console.WriteLine("패배");
+        }
+
+        public virtual void MoveLeft()
+        {
+            Console.WriteLine("좌측 이동");
+        }
+        public virtual void MoveRight()
+        {
+            Console.WriteLine("우측 이동");
+        }
+        public virtual void MoveUp()
+        {
+            Console.WriteLine("상단 이동");
+        }
+        public virtual void MoveDown()
+        {
+            Console.WriteLine("하단 이동");
+        }
+
+        public virtual void RandomMove()
+        {
+            Console.WriteLine("자동 이동");
+        }
     }
 }

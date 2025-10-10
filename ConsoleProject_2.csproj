@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Computer.cs" />
     <Compile Include="GameSystem.cs" />
+    <Compile Include="Mob.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="item.cs" />
     <Compile Include="Map.cs" />
